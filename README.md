@@ -1,6 +1,5 @@
 <div align="center">
-  <img src="public/sambalab-logo.png" alt="Sambalab Logo" width="180" style="display: inline-block; margin-right: 15px;"/>
-  <img src="public/dgrcodex-logo.webp" alt="DGRcodex Logo" width="80" style="display: inline-block; border-radius: 50%;"/>
+ 
   <h1>Siren MG: Cockpit de Gobernanza Estratégica</h1>
   <p>Sistema Inteligente Relacional para la captura de EBITDA y Dirección Fraccional (C-Suite as a Service).</p>
 </div>
