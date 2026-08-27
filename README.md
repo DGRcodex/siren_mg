@@ -6,13 +6,13 @@
 
 ---
 
-## 🎯 Descripción del Proyecto
+##  Descripción del Proyecto
 
 Siren MG es una plataforma B2B enfocada en democratizar la Dirección Estratégica para pequeñas y medianas empresas industriales y proveedoras de la minería en Chile. 
 
 Mediante un motor algorítmico y un "Cuestionario Socrático", la plataforma cuantifica de manera instantánea las fugas invisibles de margen (EBITDA) en operaciones, RRHH y licitaciones, ofreciendo un **Cockpit 360°** en tiempo real al Gerente General.
 
-## 🚀 Equipo Principal
+##  Equipo Principal
 
 Este desarrollo es operado bajo la gobernanza y ejecución de **Sambalab**:
 
@@ -20,7 +20,7 @@ Este desarrollo es operado bajo la gobernanza y ejecución de **Sambalab**:
 *   **Pedro García Moretti:** Director de Negocios y Operaciones. Responsable del flujo de monetización, estrategia B2B y despliegue del producto.
 *   **Daniel García Rojas:** CTO & Arquitecto Principal. Desarrollador end-to-end de la infraestructura web, motor de cálculo en Python, seguridad y despliegue cloud.
 
-## 💻 Arquitectura Tecnológica
+##  Arquitectura Tecnológica
 
 *   **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4. Enfoque PWA / Mobile-First.
 *   **Backend & Cloud:** GCP (Google Cloud Platform) con Cloud Run para la API (Python/FastAPI) y Firebase/PostgreSQL para base de datos.
