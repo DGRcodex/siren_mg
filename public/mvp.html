@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIREN MG | Sistema de Gobernanza & Captura de EBITDA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#0284c7',
+              600: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+              950: '#082f49',
+            },
+            siren: {
+              gold: '#f59e0b',
+              navy: '#0b1329',
+              dark: '#060a17',
+              card: '#0e172f',
+              border: '#1e293b',
+              danger: '#ef4444',
+              success: '#10b981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom luxury scrollbars & glassmorphism */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #060a17; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0284c7; }
+    
+    .glass-card {
+      background: rgba(14, 23, 47, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-card-glow {
+      background: rgba(14, 23, 47, 0.85);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      box-shadow: 0 0 25px -5px rgba(2, 132, 199, 0.15);
+    }
+    .metric-number {
+      font-variant-numeric: tabular-nums;
+    }
+    @media print {
+      body { background: white !important; color: black !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .glass-card { background: white !important; border: 1px solid #ccc !important; box-shadow: none !important; color: black !important; }
+    }
+  </style>
+</head>
+
+<body class="h-full font-sans antialiased overflow-x-hidden flex flex-col bg-[#060a17] text-slate-100 selection:bg-brand-500 selection:text-white">
+
+  <header class="sticky top-0 z-50 bg-[#060a17]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3.5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Brand & Badges -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('diagnostic')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-sky-600 to-indigo-700 p-0.5 shadow-lg shadow-sky-500/20 flex items-center justify-center">
+          <div class="w-full h-full bg-[#060a17] rounded-[10px] flex items-center justify-center">
+            <span class="font-extrabold text-lg text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-200">S</span>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-bold text-lg tracking-tight text-white">SIREN <span class="text-sky-400 font-extrabold">MG</span></span>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">C-Suite SaaS</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Gobernanza Estratégica & Captura de EBITDA</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 border border-slate-800 p-1 rounded-xl">
+        <button onclick="switchView('diagnostic')" id="nav-diagnostic" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold text-sky-400 bg-sky-950/60 border border-sky-800/40 flex items-center gap-1.5 transition">
+          <i data-lucide="calculator" class="w-3.5 h-3.5"></i> Prediagnóstico Socrático
+        </button>
+        <button onclick="switchView('cockpit')" id="nav-cockpit" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-1.5 transition">
+          <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i> Cockpit 360°
+        </button>
+        <button onclick="switchView('radar')" id="nav-radar" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-1.5 transition">
+          <i data-lucide="radar" class="w-3.5 h-3.5"></i> Radar Macro & IA
+        </button>
+        <button onclick="switchView('warroom')" id="nav-warroom" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-1.5 transition">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Scoring Go / No-Go
+        </button>
+        <button onclick="switchView('roadmap')" id="nav-roadmap" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-1.5 transition">
+          <i data-lucide="kanban" class="w-3.5 h-3.5"></i> Triaje 90 Días
+        </button>
+      </nav>
+
+      <!-- Quick Action / Revenue Controls -->
+      <div class="flex items-center space-x-3">
+        <div class="hidden sm:flex items-center space-x-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg">
+          <span class="text-[11px] text-slate-400 font-mono">Venta:</span>
+          <span class="text-xs font-mono font-bold text-sky-400" id="header-rev-display">$10.000M CLP</span>
+        </div>
+        <button onclick="openConfigModal()" class="p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition" title="Ajustar Parámetros de Facturación">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+        </button>
+        <button onclick="exportToPrint()" class="bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 text-white font-medium text-xs px-3.5 py-2 rounded-lg shadow-lg shadow-sky-600/20 flex items-center gap-1.5 transition">
+          <i data-lucide="file-down" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Reporte Boardroom</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Nav Bar -->
+    <div class="md:hidden flex items-center justify-between pt-2 border-t border-slate-800/60 mt-2 overflow-x-auto space-x-2 pb-1">
+      <button onclick="switchView('diagnostic')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-300 whitespace-nowrap">Diagnóstico</button>
+      <button onclick="switchView('cockpit')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-300 whitespace-nowrap">Cockpit 360°</button>
+      <button onclick="switchView('radar')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-300 whitespace-nowrap">Radar Macro</button>
+      <button onclick="switchView('warroom')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-300 whitespace-nowrap">Go/No-Go</button>
+      <button onclick="switchView('roadmap')" class="px-2.5 py-1 rounded text-xs font-medium text-slate-300 whitespace-nowrap">Triaje</button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+    <!-- Hero Value Strip -->
+    <div class="relative overflow-hidden rounded-2xl glass-card-glow p-6 lg:p-7 border border-sky-900/40">
+      <div class="absolute -right-20 -top-20 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-7 space-y-3">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-medium">
+            <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+            <span>Detección de Fugas Silenciosas en P&L (Metodología Minto & COSO ERM)</span>
+          </div>
+          <h1 class="text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            Toma el manubrio de tu EBITDA: <br class="hidden sm:block">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400">
+              De autopsias contables a inmunidad en tiempo real
+            </span>
+          </h1>
+          <p class="text-slate-300 text-xs lg:text-sm leading-relaxed max-w-2xl">
+            El 90% de las fallas de margen no nacen en la venta, sino en la inercia operacional. Este motor evalúa la madurez de tu empresa mediante el <strong class="text-white">algoritmo doctrinal SIREN MG</strong> para blindar al Gerente General y capturar valor de caja inmediato.
+          </p>
+        </div>
+
+        <!-- Consolidated Live Metrics Box -->
+        <div class="lg:col-span-5 grid grid-cols-2 gap-3 bg-slate-950/70 p-4 rounded-xl border border-slate-800">
+          <div class="p-3 bg-slate-900/80 rounded-lg border border-red-950/60">
+            <span class="text-[11px] font-semibold text-red-400 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="trending-down" class="w-3.5 h-3.5"></i> Fuga Teórica
+            </span>
+            <div class="text-xl font-mono font-bold text-red-400 mt-1" id="kpi-fuga-total">-$1.706M</div>
+            <span class="text-[10px] text-slate-400" id="kpi-fuga-pct">17.06% de la facturación</span>
+          </div>
+
+          <div class="p-3 bg-slate-900/80 rounded-lg border border-emerald-950/60">
+            <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Captura EBITDA
+            </span>
+            <div class="text-xl font-mono font-bold text-emerald-400 mt-1" id="kpi-captura-ebitda">+$955M</div>
+            <span class="text-[10px] text-slate-400">Capture Rate: 56% neto</span>
+          </div>
+
+          <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-[11px] font-semibold text-sky-400 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="activity" class="w-3.5 h-3.5"></i> Madurez Global
+            </span>
+            <div class="text-lg font-mono font-bold text-white mt-1" id="kpi-score-madurez">1.65 <span class="text-xs text-slate-400 font-sans">/ 5.0</span></div>
+            <span class="text-[10px] text-amber-400 font-medium" id="kpi-score-badge">Nivel Crítico (Reactivo)</span>
+          </div>
+
+          <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800">
+            <span class="text-[11px] font-semibold text-purple-400 uppercase tracking-wider flex items-center gap-1">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Retorno ROI
+            </span>
+            <div class="text-lg font-mono font-bold text-purple-300 mt-1">> 10.5x</div>
+            <span class="text-[10px] text-slate-400">Primer año de tracción</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-diagnostic" class="app-view space-y-6">
+      
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i data-lucide="stethoscope" class="w-5 h-5 text-sky-400"></i>
+            Prediagnóstico Socrático de 10 Puntos Tácticos
+          </h2>
+          <p class="text-xs text-slate-400">Ajusta la nota (1.0 a 5.0) en cada ítem para calcular la penalización matemática automática.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="presetScores('critical')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-950/40 text-red-300 border border-red-800/40 hover:bg-red-900/40 transition">Simular Caso Base ($1.706M)</button>
+          <button onclick="presetScores('optimized')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 hover:bg-emerald-900/40 transition">Simular Blindaje Total</button>
+        </div>
+      </div>
+
+      <!-- Question Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="questions-container">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Detailed Calculation Footnote -->
+      <div class="p-4 rounded-xl bg-slate-900/40 border border-slate-800/60 text-xs text-slate-400 space-y-1">
+        <p class="font-mono text-sky-300 font-semibold">📐 Algoritmo Financiero Doctrinal:</p>
+        <p>Fuga del Ítem (CLP) = Facturación Anual (V) × % Ponderador Máximo × [(5 - Nota) / 4]. Respaldo metodológico: Mankins & Steele (Bain/HBR), Zero-Based Cost-Out (McKinsey) y Matriz de Riesgo COSO ERM.</p>
+      </div>
+
+    </div>
+
+    <div id="view-cockpit" class="app-view hidden space-y-6">
+      
+      <!-- Top Row: Triángulo Financiero & P&L Curve -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Triángulo Financiero (Operaciones vs Finanzas vs Comercial) -->
+        <div class="lg:col-span-5 glass-card rounded-xl p-5 border border-slate-800 space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="triangle" class="w-4 h-4 text-cyan-400"></i> Mesa del Triángulo Financiero
+              </h3>
+              <p class="text-xs text-slate-400">Sincronización semanal sin feudos ni ceguera</p>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/40">G3 Governance</span>
+          </div>
+
+          <div class="h-60 relative flex items-center justify-center">
+            <canvas id="radarTriangleChart"></canvas>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/80 text-center">
+            <div class="p-2 rounded bg-slate-950/60">
+              <span class="text-[10px] text-slate-400 block">Comercial</span>
+              <span class="text-xs font-bold text-emerald-400 font-mono">Margen >22%</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/60">
+              <span class="text-[10px] text-slate-400 block">Operaciones</span>
+              <span class="text-xs font-bold text-sky-400 font-mono">SLA 98.2%</span>
+            </div>
+            <div class="p-2 rounded bg-slate-950/60">
+              <span class="text-[10px] text-slate-400 block">Finanzas (G3)</span>
+              <span class="text-xs font-bold text-purple-400 font-mono">Curva S +4%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curva S de Contratos & Desviaciones Vivas -->
+        <div class="lg:col-span-7 glass-card rounded-xl p-5 border border-slate-800 space-y-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                <i data-lucide="line-chart" class="w-4 h-4 text-sky-400"></i> Curva S Acumulada: Licitación vs. Real Faena
+              </h3>
+              <p class="text-xs text-slate-400">Detección de erosión de margen antes del cierre contable (SII)</p>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/40">Alerta Temprana</span>
+          </div>
+
+          <div class="h-60">
+            <canvas id="curveSChart"></canvas>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-800/80">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-sky-400"></span> Presupuesto Licitado</span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> Avance Facturado</span>
+            <span class="flex items-center gap-1.5 text-amber-300 font-mono"><i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Desviación Costo Faena: -$38M (Mes 4)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Row: 4 Blocks Status & Executive Alerts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Bloque 1: Personas -->
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <i data-lucide="users" class="w-4 h-4 text-pink-400"></i> Bloque Personas
+            </span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-950 text-red-300">Crítico</span>
+          </div>
+          <p class="text-xs text-slate-300">Equipo G3 (CEO + CFO + CHRO). Autonomía de RRHH fuera de Finanzas.</p>
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between font-mono">
+            <span>Incentivos Phantom:</span>
+            <span class="text-red-400 font-semibold">Inexistente (1.0)</span>
+          </div>
+        </div>
+
+        <!-- Bloque 2: Procesos & Flota -->
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <i data-lucide="truck" class="w-4 h-4 text-cyan-400"></i> Procesos & Flota
+            </span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-950 text-amber-300">Alerta</span>
+          </div>
+          <p class="text-xs text-slate-300">Taller como UEN de Asset Management con arriendo interno y ROA.</p>
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between font-mono">
+            <span>Disp. Mecánica:</span>
+            <span class="text-amber-400 font-semibold">81.4% (Meta 92%)</span>
+          </div>
+        </div>
+
+        <!-- Bloque 3: Comercial & Licitaciones -->
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> Licitaciones & KAM
+            </span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-950 text-sky-300">En Tracción</span>
+          </div>
+          <p class="text-xs text-slate-300">Protocolo Go/No-Go y conversión de Administradores a KAMs de adendas.</p>
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between font-mono">
+            <span>Adendas faena:</span>
+            <span class="text-emerald-400 font-semibold">+$64M cobrados</span>
+          </div>
+        </div>
+
+        <!-- Bloque 4: Gobernanza Financiera -->
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-slate-200 flex items-center gap-1.5">
+              <i data-lucide="shield" class="w-4 h-4 text-purple-400"></i> Gobernanza C-Suite
+            </span>
+            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300">Blindado</span>
+          </div>
+          <p class="text-xs text-slate-300">Reportabilidad 24/7 en smartphone con inmunidad informativa ante Directorio.</p>
+          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between font-mono">
+            <span>Cadencia Comité:</span>
+            <span class="text-purple-300 font-semibold">Semanal 100%</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="view-radar" class="app-view hidden space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Live Macro Indicators Strip -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="glass-card rounded-xl p-5 border border-slate-800 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="globe" class="w-4 h-4 text-sky-400"></i> Variables Macroeconómicas
+            </h3>
+            <p class="text-xs text-slate-400">Conectado a APIs del Banco Central e INE</p>
+
+            <div class="space-y-2.5 pt-2">
+              <div class="flex justify-between items-center p-2.5 bg-slate-950/70 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-xs font-semibold text-slate-200 block">UF (Chile)</span>
+                  <span class="text-[10px] text-slate-400">Reajustabilidad mensual</span>
+                </div>
+                <span class="font-mono text-sm font-bold text-sky-400">$37.940,50</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2.5 bg-slate-950/70 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-xs font-semibold text-slate-200 block">TPM (Tasa Política)</span>
+                  <span class="text-[10px] text-slate-400">Costo financiero capital</span>
+                </div>
+                <span class="font-mono text-sm font-bold text-emerald-400">5.25%</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2.5 bg-slate-950/70 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-xs font-semibold text-slate-200 block">Dólar Observado (USD/CLP)</span>
+                  <span class="text-[10px] text-slate-400">Sensibilidad repuestos/CIF</span>
+                </div>
+                <span class="font-mono text-sm font-bold text-amber-400">$942,80</span>
+              </div>
+
+              <div class="flex justify-between items-center p-2.5 bg-slate-950/70 rounded-lg border border-slate-800">
+                <div>
+                  <span class="text-xs font-semibold text-slate-200 block">Imacec Minero / Industrial</span>
+                  <span class="text-[10px] text-slate-400">Tendencia de actividad</span>
+                </div>
+                <span class="font-mono text-sm font-bold text-purple-400">+2.8% a/a</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customs / DataSur Intelligence -->
+          <div class="glass-card rounded-xl p-5 border border-slate-800 space-y-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="container" class="w-4 h-4 text-amber-400"></i> Radar de Aduanas & Precios CIF
+            </h3>
+            <p class="text-xs text-slate-400">Inteligencia de importaciones vs. competidores</p>
+            <div class="text-xs text-slate-300 space-y-2">
+              <div class="p-2.5 bg-amber-950/20 border border-amber-900/40 rounded-lg">
+                <span class="text-amber-300 font-semibold block mb-0.5">Alerta de Precios CIF Repuestos:</span>
+                El competidor directo "Líder Minero S.A." importó válvulas con flete marítimo -8.4% menor en Puerto San Antonio.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Executive Briefing -->
+        <div class="lg:col-span-8 glass-card rounded-xl p-6 border border-slate-800 space-y-4">
+          <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-5 h-5 text-sky-400"></i> Briefing Directivo C-Level (Vertex AI)
+              </h3>
+              <p class="text-xs text-slate-400">Síntesis cualitativa automatizada para el Gerente General y Directorio</p>
+            </div>
+            <button onclick="refreshAIBriefing()" class="px-3 py-1.5 rounded-lg bg-sky-950 border border-sky-800/60 text-sky-300 text-xs font-medium hover:bg-sky-900 transition flex items-center gap-1">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reanalizar
+            </button>
+          </div>
+
+          <div class="space-y-4 text-xs lg:text-sm text-slate-200 leading-relaxed font-sans" id="ai-briefing-body">
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+              <h4 class="font-bold text-sky-300 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i> Veredicto de Vulnerabilidad & Gobernanza
+              </h4>
+              <p>
+                Tu organización presenta actualmente un <strong>Score de Salud de 1.65/5.0</strong>. Se evidencia una fuga silenciosa equivalente a <strong class="text-red-400">$1.706M CLP anuales</strong>, concentrada principalmente en el descalce entre la oficina técnica y terreno (obras adicionales no cobradas en faena y ausencia de War Room antes de enviar propuestas).
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/80">
+                <span class="text-xs font-bold text-amber-300 block mb-1">Riesgo Inmediato de Margen</span>
+                <p class="text-xs text-slate-300">
+                  La subordinación de RRHH a Finanzas y la falta de Phantom Equity promueven una postura defensiva que recorta presupuestos a ciegas en vez de incentivar el EBITDA incremental.
+                </p>
+              </div>
+              <div class="p-3.5 rounded-lg bg-slate-950/60 border border-slate-800/80">
+                <span class="text-xs font-bold text-emerald-300 block mb-1">Palanca de Captura Rápida (Quick Win)</span>
+                <p class="text-xs text-slate-300">
+                  Instalar el protocolo de cobro de adendas en terreno con KAMs y el checklist Go/No-Go recuperará <strong class="text-emerald-400">+$350M CLP</strong> en los primeros 60 días de intervención.
+                </p>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-blue-950/30 border border-blue-900/40 text-xs text-blue-200">
+              <strong>Mensaje al Soberano (Gerente General):</strong> "El Directorio no necesita un informe histórico en Excel desfasado 45 días. Exige un manubrio preventivo. La activación de la Mesa del Triángulo Financiero blindará tu posición ejecutiva en la próxima junta."
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="view-warroom" class="app-view hidden space-y-6">
+      
+      <div class="glass-card rounded-xl p-6 border border-slate-800 space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
+              Simulador de Calificación de Licitaciones (Protocolo Go / No-Go)
+            </h2>
+            <p class="text-xs text-slate-400">Evita destinar horas de ingeniería a contratos tóxicos o con margen erosionado en faena</p>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30" id="gonogo-verdict-badge">
+            Evaluando Factibilidad...
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          
+          <!-- Variable 1: Margen Bruto Licitado -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex justify-between items-center text-xs font-semibold">
+              <span class="text-slate-200">1. Margen EBITDA Estimado</span>
+              <span class="text-sky-400 font-mono text-sm" id="val-gng-margen">24%</span>
+            </div>
+            <input type="range" min="5" max="40" value="24" class="w-full accent-sky-400" id="range-gng-margen" oninput="calculateGoNoGo()">
+            <span class="text-[11px] text-slate-400 block">Umbral mínimo institucional: 18%</span>
+          </div>
+
+          <!-- Variable 2: Cláusula de Reajuste Polinómico -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-semibold text-slate-200 block">2. Cláusula de Reajuste / IPC / UF</span>
+            <div class="flex gap-2">
+              <button onclick="setGngOption('reajuste', true)" id="btn-reajuste-si" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-sky-600 text-white transition">Incluida (Sí)</button>
+              <button onclick="setGngOption('reajuste', false)" id="btn-reajuste-no" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition">Sin Cláusula (No)</button>
+            </div>
+            <span class="text-[11px] text-slate-400 block">Protección ante alza de insumos y mano de obra</span>
+          </div>
+
+          <!-- Variable 3: Validación Presencial War Room -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-semibold text-slate-200 block">3. Validación Técnica en Terreno</span>
+            <div class="flex gap-2">
+              <button onclick="setGngOption('warroom', true)" id="btn-warroom-si" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-sky-600 text-white transition">Validada (Mesa)</button>
+              <button onclick="setGngOption('warroom', false)" id="btn-warroom-no" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition">Solo Escritorio</button>
+            </div>
+            <span class="text-[11px] text-slate-400 block">Cubicación revisada con especialista de faena</span>
+          </div>
+
+          <!-- Variable 4: Concentración del Mandante -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <div class="flex justify-between items-center text-xs font-semibold">
+              <span class="text-slate-200">4. Concentración en Mandante</span>
+              <span class="text-amber-400 font-mono text-sm" id="val-gng-client">22%</span>
+            </div>
+            <input type="range" min="5" max="70" value="22" class="w-full accent-amber-400" id="range-gng-client" oninput="calculateGoNoGo()">
+            <span class="text-[11px] text-slate-400 block">Riesgo si supera el 30% de la venta total</span>
+          </div>
+
+          <!-- Variable 5: Experiencia en Tipo de Faena -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-semibold text-slate-200 block">5. Curva de Experiencia Previa</span>
+            <div class="flex gap-2">
+              <button onclick="setGngOption('exp', true)" id="btn-exp-si" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-sky-600 text-white transition">Probada (>3 años)</button>
+              <button onclick="setGngOption('exp', false)" id="btn-exp-no" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition">Incipiente / Nueva</button>
+            </div>
+            <span class="text-[11px] text-slate-400 block">Evita costos imprevistos de aprendizaje</span>
+          </div>
+
+          <!-- Variable 6: Handover Pack Protocolizado -->
+          <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-3">
+            <span class="text-xs font-semibold text-slate-200 block">6. Protocolo de Handover Pack</span>
+            <div class="flex gap-2">
+              <button onclick="setGngOption('handover', true)" id="btn-handover-si" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-sky-600 text-white transition">Obligatorio</button>
+              <button onclick="setGngOption('handover', false)" id="btn-handover-no" class="flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition">Informal</button>
+            </div>
+            <span class="text-[11px] text-slate-400 block">Traspaso formal de holguras a operaciones</span>
+          </div>
+
+        </div>
+
+        <!-- Result Box -->
+        <div class="p-5 rounded-xl bg-slate-950 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="space-y-1">
+            <span class="text-xs text-slate-400 font-medium">Dictamen de Gobernanza de Propuesta:</span>
+            <div class="text-xl font-bold font-mono" id="gng-decision-text">POSTULAR CON AUTORIZACIÓN C-LEVEL (GO)</div>
+            <p class="text-xs text-slate-400" id="gng-decision-sub">La propuesta cumple con la rentabilidad mínima, resguardo inflacionario y factibilidad técnica en terreno.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 block uppercase">Puntaje Go/No-Go</span>
+              <span class="text-2xl font-mono font-extrabold text-sky-400" id="gng-score-display">85 / 100</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="view-roadmap" class="app-view hidden space-y-6">
+      
+      <div class="glass-card rounded-xl p-6 border border-slate-800 space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-800">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="kanban" class="w-5 h-5 text-emerald-400"></i>
+              Matriz de Triaje & Plan de Acción a 90 Días
+            </h2>
+            <p class="text-xs text-slate-400">Priorización quirúrgica por volumen de caja expuesto (Quick Wins)</p>
+          </div>
+          <div class="flex gap-2">
+            <span class="px-2.5 py-1 rounded bg-red-950/60 text-red-300 text-[11px] font-semibold border border-red-800/40">🔴 Alta (Semanal)</span>
+            <span class="px-2.5 py-1 rounded bg-amber-950/60 text-amber-300 text-[11px] font-semibold border border-amber-800/40">🟡 Media (Quincenal)</span>
+            <span class="px-2.5 py-1 rounded bg-emerald-950/60 text-emerald-300 text-[11px] font-semibold border border-emerald-800/40">🟢 Baja (Trimestral)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Column 1: Fase 1 (Días 1-30) -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+              <span class="text-xs font-bold text-sky-400">Fase 1: Quick Wins (1-30 Días)</span>
+              <span class="text-[10px] font-mono bg-sky-950 text-sky-300 px-1.5 py-0.5 rounded">Captura Inmediata</span>
+            </div>
+            
+            <div class="space-y-2.5">
+              <!-- Card 1 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-red-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Incentivos Phantom Equity</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$326M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Rediseñar bonos fijos hacia equidad sobre EBITDA extraordinario incremental.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: GG + Directorio</span>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-red-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Scoring Go / No-Go</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$82M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Instalar checklist obligatorio de calificación técnica antes de licitar.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: Gerente Comercial</span>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-amber-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Radar Entorno & CIF</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$56M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Conectar APIs del Banco Central y Aduanas para precios de importación.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: Comercial / IT</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Fase 2 (Días 31-60) -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+              <span class="text-xs font-bold text-cyan-400">Fase 2: Protocolos (31-60 Días)</span>
+              <span class="text-[10px] font-mono bg-cyan-950 text-cyan-300 px-1.5 py-0.5 rounded">Despliegue Cockpit</span>
+            </div>
+            
+            <div class="space-y-2.5">
+              <!-- Card 4 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-red-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Admin. a KAMs Terreno</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$196M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Entrenamiento y bonificación para cobrar obras adicionales en faena.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: G. Operaciones</span>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-amber-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">War Room Presencial</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$49M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Mesa presencial con técnicos de faena para validar rendimientos reales.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: Comercial + Ops</span>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-amber-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Asset Mgmt en Talleres</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$100M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Mantenimiento como UEN con tarifa de arriendo interno y ROA.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: G. Mantenimiento</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Fase 3 (Días 61-90+) -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+              <span class="text-xs font-bold text-purple-400">Fase 3: Consolidación C-Suite</span>
+              <span class="text-[10px] font-mono bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded">Retainer / Escala</span>
+            </div>
+            
+            <div class="space-y-2.5">
+              <!-- Card 7 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-red-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Triángulo Financiero</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$110M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Cadencia semanal cruzada Finanzas-Comercial-Operaciones.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: GG + C-Suite</span>
+              </div>
+
+              <!-- Card 8 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-red-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Autonomía RRHH (G3)</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$55M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Independizar RRHH de Finanzas con reporte directo al CEO.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: GG / CHRO</span>
+              </div>
+
+              <!-- Card 9 -->
+              <div class="p-3 bg-slate-950 rounded-lg border-l-4 border-emerald-500 space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-slate-100">Portafolio UEN (BCG)</span>
+                  <span class="text-[10px] font-mono text-emerald-400">+$90M</span>
+                </div>
+                <p class="text-[11px] text-slate-400">Eliminación de subsidios cruzados hacia unidades deficitarias.</p>
+                <span class="text-[10px] text-slate-500 font-mono block">Resp: Directorio</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="modal-config" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-sky-400"></i> Parámetros de Simulación
+        </h3>
+        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Facturación Anual de la Empresa (CLP):</label>
+          <input type="number" id="input-annual-revenue" step="500000000" value="10000000000" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 font-mono text-sky-400 font-bold text-sm focus:border-sky-500 focus:outline-none">
+          <span class="text-[10px] text-slate-500 mt-1 block">Ejemplo: $10.000.000.000 CLP para mediana empresa industrial</span>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">Margen EBITDA Actual Estimado (%):</label>
+          <input type="number" id="input-ebitda-current" min="1" max="50" value="8" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 font-mono text-white text-sm focus:border-sky-500 focus:outline-none">
+          <span class="text-[10px] text-slate-500 mt-1 block">Base promedio en minería / servicios: 8%</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-800">
+        <button onclick="closeConfigModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700 transition">Cancelar</button>
+        <button onclick="saveConfigModal()" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition">Aplicar y Recalcular</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let annualRevenue = 10000000000; // 10.000M CLP base
+    let currentEbitdaRate = 0.08; // 8%
+
+    // 10 Socratic Diagnostic Items from Manual
+    const diagnosticItems = [
+      {
+        id: "E1",
+        code: "E1",
+        block: "Gobernanza",
+        title: "Estrategia Viva vs. Archivador",
+        question: "¿La estrategia actual de su empresa es un plan vivo monitoreado semanalmente por la primera línea para guiar la toma de decisiones, o es un documento inerte guardado en un cajón?",
+        author: "Kaplan & Norton (HBR): The Execution Premium",
+        maxPct: 0.0133, // 1.33%
+        score: 2.0,
+      },
+      {
+        id: "E2",
+        code: "E2",
+        block: "Gobernanza",
+        title: "Reportabilidad Online & Cockpit",
+        question: "¿Tiene hoy su casa 100% sistematizada con reportes en línea en su teléfono móvil para tomar decisiones tácticas en tiempo real, o sigue gobernando con 'reportes autopsia' en Excel a mes vencido cuando el margen ya se perdió?",
+        author: "Deming & Gartner: Single Source of Truth",
+        maxPct: 0.0195, // 1.95%
+        score: 1.5,
+      },
+      {
+        id: "E3",
+        code: "E3",
+        block: "Gobernanza",
+        title: "Blindaje & Soledad Directiva",
+        question: "¿Si el Directorio o el dueño de la empresa lo llama de imprevisto a pedirle cuentas del avance estratégico del trimestre, cuenta con un tablero único para responder con datos exactos en el instante, o le toca salir a 'cazar' información dispersa entre sus subgerentes?",
+        author: "Andy Grove: High Output Management",
+        maxPct: 0.0100, // 1.00%
+        score: 2.0,
+      },
+      {
+        id: "E4",
+        code: "E4",
+        block: "Personas",
+        title: "Incentivos Phantom Equity C-Suite",
+        question: "¿Su compensación gerencial de la plana directiva premia solo el cumplimiento del presupuesto base, o les otorga incentivos tipo 'Phantom Equity' sobre la generación de EBITDA extraordinario por encima del plan?",
+        author: "Bain & Company: Executive Compensation for Value",
+        maxPct: 0.0200, // 2.00% (High critical)
+        score: 1.5,
+      },
+      {
+        id: "E5",
+        code: "E5",
+        block: "Comercial",
+        title: "Radar de Entorno & Aduanas (SaaS)",
+        question: "¿Cuenta con un radar automatizado de inteligencia de mercado que conecte los datos de aduanas (DataSur), variables de Porter y el Banco Central con su estrategia, o pierde tiempo buscando información dispersa mientras su competencia le gana espacio en el mercado?",
+        author: "Porter, M.: Competitive Strategy",
+        maxPct: 0.0100, // 1.00%
+        score: 1.0,
+      },
+      {
+        id: "C1",
+        code: "C1",
+        block: "Comercial",
+        title: "Gobernanza de Licitaciones (Go/No-Go)",
+        question: "¿Dispone de una matriz cuantitativa de calificación (capacidad técnica, ROI mínimo y matriz de riesgos) para decidir a qué licitaciones mineras o industriales postular, o gasta recursos de ingeniería cotizando a ciegas?",
+        author: "PMI: Pulse of the Profession Report",
+        maxPct: 0.0167, // 1.67%
+        score: 1.5,
+      },
+      {
+        id: "C2",
+        code: "C2",
+        block: "Comercial",
+        title: "Admin. de Contrato a KAMs de Terreno",
+        question: "¿Sus administradores de contrato en terreno actúan como meros ejecutores técnicos que regalan horas-hombre por presión del mandante, o están dirigidos, entrenados y bonificados bajo el modelo de KAM de terreno, enfocados en la dirección y cobro de adendas?",
+        author: "Harvard Negotiation Project: Getting to Yes",
+        maxPct: 0.0400, // 4.00% (Highest leak)
+        score: 1.5,
+      },
+      {
+        id: "C3",
+        code: "C3",
+        block: "Procesos",
+        title: "Protocolo de Handover Comercial-Ops",
+        question: "¿Al adjudicarse una licitación relevante, existe un protocolo estandarizado de Handover que traspase la oferta técnica a operaciones de forma obligatoria, o se realiza una entrega informal de carpetas?",
+        author: "PMI: Managing Handover in Complex Contracts",
+        maxPct: 0.0083, // 0.83%
+        score: 2.0,
+      },
+      {
+        id: "C4",
+        code: "C4",
+        block: "Procesos",
+        title: "War Room Técnico Presencial",
+        question: "¿Antes de enviar una oferta económica relevante, se reúne una Mesa de Guerra (War Room) presencial obligatoria con el especialista de terreno para validar la factibilidad y costos reales de la operación?",
+        author: "Bain & Company: Cost-Out, Value-In Transformation",
+        maxPct: 0.0117, // 1.17%
+        score: 2.0,
+      },
+      {
+        id: "C5",
+        code: "C5",
+        block: "Procesos",
+        title: "Cierre Semanal / Mitigación de Fugas",
+        question: "¿Existe visibilidad del rendimiento de cada contrato? ¿Se encuentra maximizando el contrato en operación con la licitación adjudicada, se activan planes de mitigación inmediatos, o solo se monitorea con el balance contable del mes?",
+        author: "Deloitte: Capital Projects Infrastructure",
+        maxPct: 0.0150, // 1.50%
+        score: 1.5,
+      }
+    ];
+
+    // Go/No-Go State
+    let gngState = {
+      reajuste: true,
+      warroom: true,
+      exp: true,
+      handover: true
+    };
+
+    let triangleChartInstance = null;
+    let curveSChartInstance = null;
+
+    function formatCLP(amount) {
+      const millions = Math.round(amount / 1000000);
+      return `$${millions.toLocaleString('es-CL')}M CLP`;
+    }
+
+    function formatNumber(num) {
+      return num.toLocaleString('es-CL');
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '';
+
+      diagnosticItems.forEach((item, index) => {
+        // Calculate item leak
+        const factor = (5 - item.score) / 4;
+        const leakAmount = annualRevenue * item.maxPct * factor;
+        const badgeColor = item.score <= 1.5 ? 'bg-red-950/80 text-red-400 border-red-800/60' : item.score <= 3 ? 'bg-amber-950/80 text-amber-400 border-amber-800/60' : 'bg-emerald-950/80 text-emerald-400 border-emerald-800/60';
+
+        const card = document.createElement('div');
+        card.className = 'glass-card rounded-xl p-5 border border-slate-800/80 hover:border-slate-700 transition space-y-3';
+        card.innerHTML = `
+          <div class="flex justify-between items-start gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800/50">${item.code}</span>
+              <h3 class="text-sm font-bold text-white">${item.title}</h3>
+            </div>
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded border ${badgeColor}" id="badge-score-${index}">
+              Nota: ${item.score.toFixed(1)}
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-300 leading-relaxed">${item.question}</p>
+
+          <div class="space-y-1.5 pt-2">
+            <div class="flex justify-between text-[11px] text-slate-400">
+              <span>1.0 (Crítico / Reactivo)</span>
+              <span class="font-bold text-white font-mono" id="label-score-${index}">${item.score.toFixed(1)} / 5.0</span>
+              <span>5.0 (World Class)</span>
+            </div>
+            <input 
+              type="range" 
+              min="1.0" 
+              max="5.0" 
+              step="0.5" 
+              value="${item.score}" 
+              class="w-full accent-sky-400 cursor-pointer"
+              oninput="updateScore(${index}, this.value)"
+            >
+          </div>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-800/70 text-xs">
+            <span class="text-[10px] text-slate-400 truncate max-w-[200px]" title="${item.author}">
+              📚 ${item.author}
+            </span>
+            <div class="text-right">
+              <span class="text-[10px] text-slate-400 block">Fuga Estimada:</span>
+              <span class="font-mono font-bold text-red-400" id="leak-display-${index}">-${formatCLP(leakAmount)}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      calculateTotals();
+    }
+
+    function updateScore(index, value) {
+      const val = parseFloat(value);
+      diagnosticItems[index].score = val;
+
+      document.getElementById(`label-score-${index}`).innerText = `${val.toFixed(1)} / 5.0`;
+      const badge = document.getElementById(`badge-score-${index}`);
+      badge.innerText = `Nota: ${val.toFixed(1)}`;
+      
+      // Update badge colors
+      badge.className = `text-xs font-mono font-bold px-2 py-0.5 rounded border ${
+        val <= 1.5 ? 'bg-red-950/80 text-red-400 border-red-800/60' : 
+        val <= 3 ? 'bg-amber-950/80 text-amber-400 border-amber-800/60' : 
+        'bg-emerald-950/80 text-emerald-400 border-emerald-800/60'
+      }`;
+
+      // Recalculate item leak
+      const factor = (5 - val) / 4;
+      const leakAmount = annualRevenue * diagnosticItems[index].maxPct * factor;
+      document.getElementById(`leak-display-${index}`).innerText = `-${formatCLP(leakAmount)}`;
+
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      let totalLeak = 0;
+      let scoreSum = 0;
+
+      diagnosticItems.forEach(item => {
+        scoreSum += item.score;
+        const factor = (5 - item.score) / 4;
+        totalLeak += (annualRevenue * item.maxPct * factor);
+      });
+
+      const avgScore = scoreSum / diagnosticItems.length;
+      const leakPct = (totalLeak / annualRevenue) * 100;
+      const captureEBITDA = totalLeak * 0.56; // 56% conservative capture rate
+
+      // Update Header & Hero KPIs
+      document.getElementById('kpi-fuga-total').innerText = `-${formatCLP(totalLeak)}`;
+      document.getElementById('kpi-fuga-pct').innerText = `${leakPct.toFixed(2)}% de la facturación`;
+      document.getElementById('kpi-captura-ebitda').innerText = `+${formatCLP(captureEBITDA)}`;
+      document.getElementById('kpi-score-madurez').innerHTML = `${avgScore.toFixed(2)} <span class="text-xs text-slate-400 font-sans">/ 5.0</span>`;
+
+      const badge = document.getElementById('kpi-score-badge');
+      if (avgScore <= 1.8) {
+        badge.innerText = "Nivel Crítico (Reactivo)";
+        badge.className = "text-[10px] text-red-400 font-medium";
+      } else if (avgScore <= 3.2) {
+        badge.innerText = "Nivel Básico (Informal)";
+        badge.className = "text-[10px] text-amber-400 font-medium";
+      } else {
+        badge.innerText = "Nivel Blindado (World Class)";
+        badge.className = "text-[10px] text-emerald-400 font-medium";
+      }
+
+      document.getElementById('header-rev-display').innerText = formatCLP(annualRevenue);
+    }
+
+    function presetScores(type) {
+      if (type === 'critical') {
+        diagnosticItems[0].score = 2.0;
+        diagnosticItems[1].score = 1.5;
+        diagnosticItems[2].score = 2.0;
+        diagnosticItems[3].score = 1.5;
+        diagnosticItems[4].score = 1.0;
+        diagnosticItems[5].score = 1.5;
+        diagnosticItems[6].score = 1.5;
+        diagnosticItems[7].score = 2.0;
+        diagnosticItems[8].score = 2.0;
+        diagnosticItems[9].score = 1.5;
+      } else if (type === 'optimized') {
+        diagnosticItems.forEach(item => item.score = 4.5);
+      }
+      renderQuestions();
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.app-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(el => {
+        el.className = "nav-btn px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 flex items-center gap-1.5 transition";
+      });
+
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) targetView.classList.remove('hidden');
+
+      const targetNav = document.getElementById(`nav-${viewId}`);
+      if (targetNav) {
+        targetNav.className = "nav-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold text-sky-400 bg-sky-950/60 border border-sky-800/40 flex items-center gap-1.5 transition";
+      }
+
+      if (viewId === 'cockpit') {
+        initCockpitCharts();
+      }
+      lucide.createIcons();
+    }
+
+    function initCockpitCharts() {
+      // Triángulo Financiero Radar Chart
+      const ctxRadar = document.getElementById('radarTriangleChart');
+      if (ctxRadar) {
+        if (triangleChartInstance) triangleChartInstance.destroy();
+        triangleChartInstance = new Chart(ctxRadar, {
+          type: 'radar',
+          data: {
+            labels: ['Gobernanza C-Suite', 'Comercial & Margen', 'Operaciones Faena', 'Asset Mgmt Talleres', 'Gestión Personas G3', 'Control Curva S'],
+            datasets: [
+              {
+                label: 'Estado Actual',
+                data: [35, 40, 30, 45, 25, 30],
+                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                pointBackgroundColor: '#ef4444'
+              },
+              {
+                label: 'Estándar SIREN MG',
+                data: [90, 85, 95, 90, 85, 90],
+                backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                borderColor: '#0284c7',
+                borderWidth: 2,
+                pointBackgroundColor: '#0284c7'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                pointLabels: { color: '#94a3b8', font: { size: 10 } },
+                ticks: { display: false, max: 100 }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: { color: '#cbd5e1', font: { size: 11 } }
+              }
+            }
+          }
+        });
+      }
+
+      // Curva S Line Chart
+      const ctxCurve = document.getElementById('curveSChart');
+      if (ctxCurve) {
+        if (curveSChartInstance) curveSChartInstance.destroy();
+        curveSChartInstance = new Chart(ctxCurve, {
+          type: 'line',
+          data: {
+            labels: ['Mes 1', 'Mes 2', 'Mes 3', 'Mes 4', 'Mes 5', 'Mes 6'],
+            datasets: [
+              {
+                label: 'Presupuesto Licitado ($M)',
+                data: [120, 280, 510, 780, 1050, 1350],
+                borderColor: '#38bdf8',
+                backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+              },
+              {
+                label: 'Facturación Real ($M)',
+                data: [110, 260, 480, 740, 990, 1280],
+                borderColor: '#10b981',
+                borderWidth: 2,
+                tension: 0.3
+              },
+              {
+                label: 'Costo Operacional Real ($M)',
+                data: [105, 270, 520, 810, 1090, 1390],
+                borderColor: '#ef4444',
+                borderDash: [5, 5],
+                borderWidth: 2,
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+              y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } }
+            },
+            plugins: {
+              legend: { labels: { color: '#cbd5e1', font: { size: 11 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function setGngOption(key, val) {
+      gngState[key] = val;
+      
+      const btnSi = document.getElementById(`btn-${key}-si`);
+      const btnNo = document.getElementById(`btn-${key}-no`);
+
+      if (val) {
+        btnSi.className = "flex-1 py-1.5 text-xs font-medium rounded-lg bg-sky-600 text-white transition";
+        btnNo.className = "flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition";
+      } else {
+        btnSi.className = "flex-1 py-1.5 text-xs font-medium rounded-lg bg-slate-950 text-slate-400 border border-slate-800 hover:bg-slate-900 transition";
+        btnNo.className = "flex-1 py-1.5 text-xs font-medium rounded-lg bg-red-600 text-white transition";
+      }
+
+      calculateGoNoGo();
+    }
+
+    function calculateGoNoGo() {
+      const margin = parseInt(document.getElementById('range-gng-margen').value, 10);
+      const clientConc = parseInt(document.getElementById('range-gng-client').value, 10);
+
+      document.getElementById('val-gng-margen').innerText = `${margin}%`;
+      document.getElementById('val-gng-client').innerText = `${clientConc}%`;
+
+      let score = 0;
+
+      // Margin evaluation
+      if (margin >= 22) score += 30;
+      else if (margin >= 18) score += 20;
+      else score += 5;
+
+      // Reajuste
+      if (gngState.reajuste) score += 20;
+      // War Room
+      if (gngState.warroom) score += 15;
+      // Client concentration
+      if (clientConc <= 25) score += 15;
+      else if (clientConc <= 35) score += 5;
+      // Experience
+      if (gngState.exp) score += 10;
+      // Handover
+      if (gngState.handover) score += 10;
+
+      document.getElementById('gng-score-display').innerText = `${score} / 100`;
+
+      const badge = document.getElementById('gonogo-verdict-badge');
+      const text = document.getElementById('gng-decision-text');
+      const sub = document.getElementById('gng-decision-sub');
+
+      if (score >= 75) {
+        badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+        badge.innerText = "DICTAMEN: GO (APROBADO)";
+        text.innerText = "POSTULAR CON AUTORIZACIÓN C-LEVEL (GO)";
+        text.className = "text-xl font-bold font-mono text-emerald-400";
+        sub.innerText = "La propuesta cumple con la rentabilidad mínima, resguardo inflacionario y factibilidad técnica en terreno.";
+      } else if (score >= 50) {
+        badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30";
+        badge.innerText = "DICTAMEN: CONDICIONADO";
+        text.innerText = "CONDICIONAR OFERTA A REVISIÓN DE TERRENO";
+        text.className = "text-xl font-bold font-mono text-amber-400";
+        sub.innerText = "Requiere ajustar cláusula de reajuste o validar rendimientos en War Room antes de enviar la propuesta.";
+      } else {
+        badge.className = "px-3 py-1 rounded-full text-xs font-mono font-bold bg-red-500/10 text-red-400 border border-red-500/30";
+        badge.innerText = "DICTAMEN: NO-GO (RECHAZADO)";
+        text.innerText = "RECHAZAR LICITACIÓN (NO-GO)";
+        text.className = "text-xl font-bold font-mono text-red-400";
+        sub.innerText = "Riesgo severo de asumir un contrato con margen negativo que erosionará el capital de trabajo.";
+      }
+    }
+
+    function openConfigModal() {
+      document.getElementById('input-annual-revenue').value = annualRevenue;
+      document.getElementById('modal-config').classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('modal-config').classList.add('hidden');
+    }
+
+    function saveConfigModal() {
+      const rev = parseFloat(document.getElementById('input-annual-revenue').value);
+      if (!isNaN(rev) && rev > 0) {
+        annualRevenue = rev;
+        renderQuestions();
+      }
+      closeConfigModal();
+    }
+
+    function refreshAIBriefing() {
+      const briefing = document.getElementById('ai-briefing-body');
+      briefing.classList.add('opacity-50');
+      setTimeout(() => {
+        briefing.classList.remove('opacity-50');
+      }, 400);
+    }
+
+    function exportToPrint() {
+      window.print();
+    }
+
+    window.onload = function() {
+      renderQuestions();
+      calculateGoNoGo();
+      lucide.createIcons();
+    };
+  </script>
+</body>
+</html>

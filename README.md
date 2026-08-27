@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="public/sambalab-logo.png" alt="Sambalab Logo" width="200"/>
+  <h1>Siren MG: Cockpit de Gobernanza Estratégica</h1>
+  <p>Sistema Inteligente Relacional para la captura de EBITDA y Dirección Fraccional (C-Suite as a Service).</p>
+</div>
 
-## Getting Started
+---
 
-First, run the development server:
+## 🎯 Descripción del Proyecto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Siren MG es una plataforma B2B enfocada en democratizar la Dirección Estratégica para pequeñas y medianas empresas industriales y proveedoras de la minería en Chile. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mediante un motor algorítmico y un "Cuestionario Socrático", la plataforma cuantifica de manera instantánea las fugas invisibles de margen (EBITDA) en operaciones, RRHH y licitaciones, ofreciendo un **Cockpit 360°** en tiempo real al Gerente General.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Equipo Principal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Este desarrollo es operado bajo la gobernanza y ejecución de **Sambalab**:
 
-## Learn More
+*   **Mauricio Geldes Díaz:** Director Estratégico & Creador de la Doctrina Siren MG. Responsable de los modelos algorítmicos, la metodología socrática y la Dirección Fraccional.
+*   **Pedro García Moretti:** Director de Negocios y Operaciones. Responsable del flujo de monetización, estrategia B2B y despliegue del producto.
+*   **Daniel García Rojas:** CTO & Arquitecto Principal. Desarrollador end-to-end de la infraestructura web, motor de cálculo en Python, seguridad y despliegue cloud.
 
-To learn more about Next.js, take a look at the following resources:
+## 💻 Arquitectura Tecnológica
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+*   **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4. Enfoque PWA / Mobile-First.
+*   **Backend & Cloud:** GCP (Google Cloud Platform) con Cloud Run para la API (Python/FastAPI) y Firebase/PostgreSQL para base de datos.
+*   **Inteligencia Artificial:** Módulo futuro conectado a aduanas y variables macro (DataSur, Banco Central) impulsado por modelos LLM.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Desarrollado con 🩵 por el Laboratorio de Ingeniería Digital y Producto, Sambalab.*
