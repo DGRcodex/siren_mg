@@ -1,147 +1,132 @@
 import Link from "next/link";
-import { ArrowRight, TrendingUp, ShieldAlert, Activity, CheckCircle2 } from "lucide-react";
+import { ArrowRight, TrendingUp, ShieldCheck, Activity, Target, AlertTriangle, Briefcase } from "lucide-react";
 
 export default function Home() {
   return (
     <div className="flex flex-col w-full">
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center px-6 py-32 overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] -z-10 pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[150px] -z-10 pointer-events-none" />
         
-        <div className="max-w-4xl space-y-8 z-10">
-          <div className="inline-block px-4 py-1.5 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold mb-4 tracking-wide uppercase border border-border">
-            Sistema Inteligente Relacional
+        <div className="max-w-5xl space-y-8 z-10">
+          <div className="inline-block px-4 py-1.5 bg-secondary text-secondary-foreground rounded-full text-sm font-bold mb-4 tracking-wider uppercase border border-border">
+            SISTEMA INTELIGENTE RELACIONAL
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-tight">
-            Toma el <span className="text-primary">Manubrio</span> de Control <br className="hidden md:block"/> de tu Empresa en Tiempo Real
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-foreground leading-tight">
+            Apaga el incendio diario. <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Blinda tu Gestión Gerencial.</span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Democratizamos la Dirección Estratégica para empresas B2B. Pasa de los manuales de escritorio al impacto directo en el EBITDA.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Las empresas B2B y contratistas mineros facturan millones, pero el EBITDA se evapora en fricciones operacionales invisibles para el Directorio. <strong>Nosotros lo cuantificamos y lo detenemos.</strong>
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <Link 
               href="/diagnostico" 
-              className="w-full sm:w-auto flex items-center justify-center gap-2 h-14 bg-primary text-primary-foreground px-8 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-all shadow-[0_0_40px_-10px_rgba(14,165,233,0.5)]"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 h-14 bg-primary text-primary-foreground px-8 rounded-lg font-bold text-lg hover:bg-primary/90 transition-all shadow-[0_0_40px_-10px_rgba(14,165,233,0.6)] group"
             >
-              <Activity className="w-5 h-5" />
-              Evaluar Salud Operacional (3 min)
+              <Activity className="w-5 h-5 group-hover:animate-pulse" />
+              Evaluar Fuga de EBITDA (3 min)
             </Link>
             <Link 
-              href="#metodologia" 
-              className="w-full sm:w-auto flex items-center justify-center h-14 bg-card text-card-foreground border border-border px-8 rounded-lg font-semibold text-lg hover:bg-secondary transition-all"
+              href="#pilares" 
+              className="w-full sm:w-auto flex items-center justify-center h-14 bg-transparent text-foreground border-2 border-border px-8 rounded-lg font-bold text-lg hover:bg-card transition-all"
             >
-              Conocer la Metodología
+              Conocer el Método SIREN
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Propuesta de Valor Section */}
-      <section id="propuesta" className="py-24 bg-card border-y border-border">
+      {/* Los 3 Pilares (Según Doctrina Mauricio) */}
+      <section id="pilares" className="py-24 bg-card border-y border-border">
         <div className="container mx-auto px-6">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">¿Por qué las empresas B2B pierden rentabilidad?</h2>
+            <h2 className="text-3xl md:text-4xl font-black mb-4 uppercase tracking-tight">Los 3 Pilares de Nuestra Consultoría</h2>
             <p className="text-muted-foreground text-lg">
-              El 80% de las fugas de EBITDA ocurren por fricciones internas invisibles para el directorio: descoordinación C-Level, falta de gobernanza y control operacional deficiente.
+              No somos una consultora tradicional. Implementamos gobernanza disruptiva enfocada en tres resultados innegociables para el Gerente General.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="bg-background border border-border p-8 rounded-2xl">
-              <div className="w-12 h-12 bg-destructive/10 text-destructive rounded-lg flex items-center justify-center mb-6">
-                <ShieldAlert className="w-6 h-6" />
+            {/* Pilar 1 */}
+            <div className="bg-background border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors relative overflow-hidden">
+              <div className="w-14 h-14 bg-green-500/10 text-green-500 rounded-xl flex items-center justify-center mb-6">
+                <TrendingUp className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Fricción Organizacional</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Roles ambiguos y procesos no documentados generan una pérdida silenciosa del 3% al 8% de la facturación anual.
+              <h3 className="text-2xl font-bold mb-4">1. Ganancia Monetaria</h3>
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                Identificamos los flancos débiles en licitaciones, contratos y operaciones en terreno que están drenando tu última línea. <strong>Recuperamos tu rentabilidad.</strong>
               </p>
             </div>
             
-            {/* Card 2 */}
-            <div className="bg-background border border-border p-8 rounded-2xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent z-0 pointer-events-none" />
-              <div className="relative z-10">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-lg flex items-center justify-center mb-6">
-                  <TrendingUp className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold mb-3">Captura de EBITDA</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Implementamos sistemas de control profundo que transforman el desorden operacional en rentabilidad directa a la última línea.
-                </p>
+            {/* Pilar 2 */}
+            <div className="bg-background border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors">
+              <div className="w-14 h-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
+                <Briefcase className="w-7 h-7" />
               </div>
+              <h3 className="text-2xl font-bold mb-4">2. Gobernanza del Negocio</h3>
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                Democratizamos la Dirección Estratégica. Ordenamos los roles C-Level y establecemos tableros de control gerencial para que la empresa opere sin depender de ti 24/7.
+              </p>
             </div>
 
-            {/* Card 3 */}
-            <div className="bg-background border border-border p-8 rounded-2xl">
-              <div className="w-12 h-12 bg-accent/10 text-accent rounded-lg flex items-center justify-center mb-6">
-                <Activity className="w-6 h-6" />
+            {/* Pilar 3 */}
+            <div className="bg-background border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors">
+              <div className="w-14 h-14 bg-accent/10 text-accent rounded-xl flex items-center justify-center mb-6">
+                <ShieldCheck className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Dirección Fraccional</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Acceso a C-Levels estratégicos sin el costo estructural full-time. Gobernanza de clase mundial para empresas en crecimiento.
+              <h3 className="text-2xl font-bold mb-4">3. Blindaje del GG</h3>
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                Protegemos la gestión del Gerente General ante el Directorio mediante reportabilidad online, actas estructuradas y trazabilidad absoluta de las decisiones.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Metodología Section */}
-      <section id="metodologia" className="py-24 container mx-auto px-6">
+      {/* El Dolor: Contratistas y B2B */}
+      <section className="py-24 container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center gap-16">
-          <div className="w-full md:w-1/2 space-y-8">
-            <div className="inline-block px-4 py-1.5 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold tracking-wide uppercase border border-border">
-              Nuestra Doctrina
+          <div className="w-full md:w-1/2 bg-card border border-border rounded-3xl p-8 relative shadow-2xl overflow-hidden">
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-destructive/20 blur-[60px] rounded-full" />
+            <div className="space-y-6 relative z-10">
+              <div className="flex items-center gap-4 mb-8">
+                <AlertTriangle className="w-10 h-10 text-destructive" />
+                <h3 className="text-2xl font-bold">El "Incendio Diario"</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="bg-background rounded-xl p-4 border border-border border-l-4 border-l-destructive">
+                  <p className="font-semibold">Desvíos de Margen Bruto y Multas en Faena.</p>
+                </div>
+                <div className="bg-background rounded-xl p-4 border border-border border-l-4 border-l-destructive">
+                  <p className="font-semibold">Directorio exigiendo resultados sin conocer la fricción real.</p>
+                </div>
+                <div className="bg-background rounded-xl p-4 border border-border border-l-4 border-l-destructive">
+                  <p className="font-semibold">Talento crítico desalineado del objetivo de EBITDA.</p>
+                </div>
+              </div>
             </div>
-            <h2 className="text-3xl md:text-5xl font-bold leading-tight">
-              Algoritmo Socrático de Diagnóstico
+          </div>
+
+          <div className="w-full md:w-1/2 space-y-8">
+            <div className="inline-block px-4 py-1.5 bg-destructive/10 text-destructive rounded-full text-sm font-bold tracking-wide uppercase border border-destructive/20">
+              Diagnóstico Fase 1
+            </div>
+            <h2 className="text-4xl md:text-5xl font-black leading-tight">
+              ¿Cuánta plata estás dejando en la mesa?
             </h2>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              No hacemos consultoría tradicional. Utilizamos una matriz de madurez corporativa basada en 7 dimensiones críticas.
+              El algoritmo socrático de SIREN MG evalúa 7 dimensiones operativas críticas. En menos de 3 minutos, obtendrás un <strong>Reporte Ejecutivo de Fuga de EBITDA</strong> y una hoja de ruta con proyectos estratégicos (BSC) priorizados por impacto.
             </p>
-            
-            <ul className="space-y-4">
-              {[
-                "Gobernanza y Roles C-Level",
-                "Control de Desvíos de Margen",
-                "Gestión de Personas Clave",
-                "Planificación y Flujo de Caja"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-lg">
-                  <CheckCircle2 className="w-6 h-6 text-primary" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
 
             <Link 
               href="/diagnostico" 
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold text-lg transition-colors group"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-bold text-xl transition-colors group"
             >
-              Comenzar tu diagnóstico ahora
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              Iniciar Prediagnóstico Socrático Gratuito
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Link>
-          </div>
-          
-          <div className="w-full md:w-1/2 bg-card border border-border rounded-3xl p-8 relative shadow-2xl">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[50px] rounded-full" />
-            <div className="space-y-6 relative z-10">
-              <div className="bg-background rounded-xl p-6 border border-border">
-                <div className="text-sm text-muted-foreground mb-2">Fuga de EBITDA Calculada</div>
-                <div className="text-4xl font-bold text-destructive font-mono">$ 145.200.000</div>
-              </div>
-              <div className="bg-background rounded-xl p-6 border border-border flex justify-between items-center">
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Nivel de Madurez</div>
-                  <div className="text-xl font-bold">2.4 / 5.0</div>
-                </div>
-                <div className="px-4 py-2 bg-accent/20 text-accent rounded-full text-sm font-semibold">
-                  Vulnerable
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
