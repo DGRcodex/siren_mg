@@ -29,6 +29,6 @@ export interface ResultadoDiagnostico {
   fugaPorCategoria: { categoria: string; fuga: number; puntaje: number; nivelCriticidad: string }[];
   nivelMadurez: number; // 0 to 5 global average
   nivelMadurezTexto: string;
-  proyectosEstrategicos: { titulo: string; descripcion: string; impacto: string; plazo: string }[];
+  proyectosEstrategicos: { titulo: string; descripcion: string; impacto: string; plazo: string; kpiSugerido?: string }[];
   analisisIA?: string;
 }

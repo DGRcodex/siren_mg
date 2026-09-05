@@ -4,17 +4,21 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { EmpresaData, RespuestaSocratica, ResultadoDiagnostico } from '@/lib/types';
 import { preguntasSocraticas } from '@/lib/preguntas';
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export default function DiagnosticoPage() {
   const router = useRouter();
-  const [step, setStep] = useState(0); // 0: Empresa, 1-7: Preguntas, 8: Cargando
+  const [step, setStep] = useState(0); 
   const [empresa, setEmpresa] = useState<EmpresaData>({
     razonSocial: '',
     rubro: 'Contratista Minero',
     facturacionAnual: 0,
     moneda: 'CLP',
   });
-  const [respuestas, setRespuestas] = useState<RespuestaSocratica[]>([]);
+  
+  // Guardamos las respuestas temporalmente antes de enviarlas. 
+  // Ahora el index del array es `step - 1`.
+  const [respuestas, setRespuestas] = useState<number[]>(Array(preguntasSocraticas.length).fill(-1));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalPreguntas = preguntasSocraticas.length;
@@ -27,26 +31,37 @@ export default function DiagnosticoPage() {
     }
   };
 
-  const handleRespuesta = (puntaje: number) => {
-    if (!preguntaActual) return;
+  const seleccionarPuntaje = (puntaje: number) => {
+    const nuevasRespuestas = [...respuestas];
+    nuevasRespuestas[step - 1] = puntaje;
+    setRespuestas(nuevasRespuestas);
+  };
 
-    const nuevaRespuesta = { preguntaId: preguntaActual.id, puntaje };
-    setRespuestas([...respuestas, nuevaRespuesta]);
-
+  const irAdelante = () => {
     if (step < totalPreguntas) {
-      // Avanzar a la siguiente pregunta con un pequeño retraso
-      setTimeout(() => setStep(step + 1), 300);
+      setStep(step + 1);
     } else {
-      // Finalizar diagnóstico
-      setStep(totalPreguntas + 1);
-      submitDiagnostico([...respuestas, nuevaRespuesta]);
+      finalizarDiagnostico();
     }
   };
 
-  const submitDiagnostico = async (todasRespuestas: RespuestaSocratica[]) => {
+  const irAtras = () => {
+    if (step > 0) {
+      setStep(step - 1);
+    }
+  };
+
+  const finalizarDiagnostico = async () => {
     setIsSubmitting(true);
+    setStep(totalPreguntas + 1); // Loading state
+
+    const payloadRespuestas: RespuestaSocratica[] = respuestas.map((puntaje, index) => ({
+      preguntaId: preguntasSocraticas[index].id,
+      puntaje: puntaje,
+    }));
+
     try {
-      const payload = { empresa, respuestas: todasRespuestas };
+      const payload = { empresa, respuestas: payloadRespuestas };
       const response = await fetch('/api/diagnostico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -62,7 +77,7 @@ export default function DiagnosticoPage() {
     } catch (error) {
       console.error('Error:', error);
       alert('Hubo un error al procesar el diagnóstico. Por favor intenta de nuevo.');
-      setStep(totalPreguntas); // Volver a la última pregunta
+      setStep(totalPreguntas); // Volver
       setIsSubmitting(false);
     }
   };
@@ -71,26 +86,29 @@ export default function DiagnosticoPage() {
   if (step === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 sm:p-8">
-        <div className="w-full max-w-xl bg-card border border-border rounded-2xl p-8 shadow-xl">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Comienza tu Diagnóstico</h1>
-          <p className="text-muted-foreground mb-8">Ingresa los datos de tu empresa para un análisis preciso.</p>
+        <div className="w-full max-w-2xl bg-card border border-border rounded-2xl p-8 sm:p-12 shadow-xl">
+          <div className="mb-8 border-b border-border pb-6">
+            <h1 className="text-3xl font-bold text-foreground mb-3">Perfilamiento Estratégico</h1>
+            <p className="text-muted-foreground text-lg">Para cuantificar tu fuga de EBITDA, necesitamos un perfil básico.</p>
+          </div>
           
           <form onSubmit={handleEmpresaSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Razón Social</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">Razón Social o Nombre Fantasía</label>
               <input
                 type="text"
                 required
-                className="w-full bg-background border border-border rounded-lg p-3 text-foreground focus:outline-none focus:border-primary transition-colors"
+                className="w-full bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg"
                 value={empresa.razonSocial}
                 onChange={(e) => setEmpresa({ ...empresa, razonSocial: e.target.value })}
+                placeholder="Ej: Minera ABC Spa"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Rubro</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">Rubro / Industria</label>
               <select
-                className="w-full bg-background border border-border rounded-lg p-3 text-foreground focus:outline-none focus:border-primary transition-colors"
+                className="w-full bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg"
                 value={empresa.rubro}
                 onChange={(e) => setEmpresa({ ...empresa, rubro: e.target.value })}
               >
@@ -102,33 +120,37 @@ export default function DiagnosticoPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Facturación Anual</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">Facturación Anual Estimada</label>
               <div className="flex gap-4">
                 <select
-                  className="w-1/4 bg-background border border-border rounded-lg p-3 text-foreground focus:outline-none focus:border-primary transition-colors"
+                  className="w-1/4 bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg font-medium"
                   value={empresa.moneda}
                   onChange={(e) => setEmpresa({ ...empresa, moneda: e.target.value as 'CLP' | 'USD' })}
                 >
-                  <option value="CLP">CLP</option>
-                  <option value="USD">USD</option>
+                  <option value="CLP">CLP ($)</option>
+                  <option value="USD">USD ($)</option>
                 </select>
                 <input
                   type="number"
                   required
                   min="1"
-                  className="w-3/4 bg-background border border-border rounded-lg p-3 text-foreground focus:outline-none focus:border-primary transition-colors"
+                  className="w-3/4 bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg"
                   value={empresa.facturacionAnual || ''}
                   onChange={(e) => setEmpresa({ ...empresa, facturacionAnual: Number(e.target.value) })}
+                  placeholder="0"
                 />
               </div>
+              <p className="text-xs text-muted-foreground mt-2">La facturación se usa exclusivamente para el algoritmo de impacto.</p>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-primary text-background font-bold rounded-lg p-4 mt-8 hover:bg-opacity-90 transition-all shadow-[0_0_15px_rgba(14,165,233,0.3)]"
-            >
-              Comenzar Diagnóstico
-            </button>
+            <div className="pt-6">
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-lg p-4 hover:bg-primary/90 transition-all shadow-lg text-lg"
+              >
+                Iniciar Evaluación <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -141,7 +163,9 @@ export default function DiagnosticoPage() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
         <div className="w-16 h-16 border-4 border-muted-foreground border-t-primary rounded-full animate-spin mb-8"></div>
         <h2 className="text-2xl font-bold text-foreground mb-4">Calculando tu Fuga de EBITDA...</h2>
-        <p className="text-muted-foreground">Analizando las áreas de fricción y estructurando el informe ejecutivo.</p>
+        <p className="text-muted-foreground text-lg max-w-md mx-auto">
+          Cruzando respuestas con la matriz de madurez corporativa SIREN y generando plan de contingencia.
+        </p>
       </div>
     );
   }
@@ -149,16 +173,21 @@ export default function DiagnosticoPage() {
   // Render Step 1-7: Questions
   if (preguntaActual) {
     const progreso = ((step - 1) / totalPreguntas) * 100;
+    const puntajeSeleccionado = respuestas[step - 1];
+
+    const esValidoParaAvanzar = puntajeSeleccionado !== -1;
 
     return (
       <div className="min-h-screen flex flex-col bg-background p-4 sm:p-8">
-        <div className="max-w-4xl w-full mx-auto flex-1 flex flex-col justify-center">
+        <div className="max-w-4xl w-full mx-auto flex-1 flex flex-col">
           
-          {/* Progress Bar */}
-          <div className="mb-12">
-            <div className="flex justify-between text-sm text-muted-foreground mb-2">
-              <span>Pregunta {step} de {totalPreguntas}</span>
-              <span>{Math.round(progreso)}%</span>
+          {/* Progress Bar & Header */}
+          <div className="mb-12 mt-8">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                Factor {step} de {totalPreguntas}
+              </span>
+              <span className="text-sm font-semibold text-primary">{Math.round(progreso)}% Completado</span>
             </div>
             <div className="w-full h-2 bg-card rounded-full overflow-hidden">
               <div 
@@ -168,37 +197,81 @@ export default function DiagnosticoPage() {
             </div>
           </div>
 
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-card text-accent border border-border text-sm font-semibold mb-6">
-              {preguntaActual.icono} {preguntaActual.categoria}
-            </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground leading-tight">
+          {/* Question Display */}
+          <div className="mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 text-secondary-foreground text-sm font-semibold mb-6 border border-border">
+              <span>{preguntaActual.icono}</span>
+              <span>{preguntaActual.categoria}</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-snug">
               {preguntaActual.pregunta}
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-            {[0, 1, 2, 3, 4, 5].map((puntaje) => (
-              <button
-                key={puntaje}
-                onClick={() => handleRespuesta(puntaje)}
-                className="group flex flex-col items-center justify-center p-6 bg-card border border-border rounded-xl hover:border-primary hover:bg-muted/10 transition-all active:scale-95"
-              >
-                <span className="text-2xl font-bold text-foreground group-hover:text-primary mb-2 transition-colors">
-                  {puntaje}
-                </span>
-                <span className="text-xs text-center text-muted-foreground">
-                  {puntaje === 0 && (preguntaActual.descripcionNivel0.substring(0, 30) + '...')}
-                  {puntaje === 5 && (preguntaActual.descripcionNivel5.substring(0, 30) + '...')}
-                  {puntaje > 0 && puntaje < 5 && `Nivel ${puntaje}`}
-                </span>
-              </button>
-            ))}
+          {/* Scale 0-5 */}
+          <div className="flex-1">
+            <p className="text-muted-foreground mb-6 font-medium">Selecciona tu nivel de madurez actual (0 = Crítico, 5 = Excelencia):</p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
+              {[0, 1, 2, 3, 4, 5].map((puntaje) => {
+                const isSelected = puntajeSeleccionado === puntaje;
+                return (
+                  <button
+                    key={puntaje}
+                    onClick={() => seleccionarPuntaje(puntaje)}
+                    className={`relative flex flex-col items-center justify-center p-6 border-2 rounded-xl transition-all ${
+                      isSelected 
+                        ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(14,165,233,0.2)]' 
+                        : 'border-border bg-card hover:border-primary/50 hover:bg-muted/10'
+                    }`}
+                  >
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 text-primary">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                    )}
+                    <span className={`text-3xl font-bold mb-2 ${isSelected ? 'text-primary' : 'text-foreground'}`}>
+                      {puntaje}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Clearer Explanations (Mauricio's feedback) */}
+            <div className="bg-card border border-border rounded-xl p-6 mb-12 flex flex-col md:flex-row gap-6 justify-between">
+              <div className="md:w-1/2">
+                <span className="inline-block px-2 py-1 bg-destructive/10 text-destructive text-xs font-bold rounded mb-2">NIVEL 0</span>
+                <p className="text-sm text-muted-foreground">{preguntaActual.descripcionNivel0}</p>
+              </div>
+              <div className="hidden md:block w-px bg-border"></div>
+              <div className="md:w-1/2">
+                <span className="inline-block px-2 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded mb-2">NIVEL 5</span>
+                <p className="text-sm text-muted-foreground">{preguntaActual.descripcionNivel5}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-between mt-8 text-sm text-muted-foreground px-4 md:px-0">
-            <span className="w-1/3 text-left">← {preguntaActual.descripcionNivel0}</span>
-            <span className="w-1/3 text-right">{preguntaActual.descripcionNivel5} →</span>
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between py-6 border-t border-border mt-auto">
+            <button
+              onClick={irAtras}
+              className="flex items-center gap-2 px-6 py-3 text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" /> Atrás
+            </button>
+            
+            <button
+              onClick={irAdelante}
+              disabled={!esValidoParaAvanzar}
+              className={`flex items-center gap-2 px-8 py-3 rounded-lg font-bold transition-all ${
+                esValidoParaAvanzar 
+                  ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg cursor-pointer' 
+                  : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
+              }`}
+            >
+              {step === totalPreguntas ? 'Generar Reporte' : 'Siguiente'} <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
 
         </div>

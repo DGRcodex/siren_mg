@@ -65,40 +65,47 @@ export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSo
   // 5. Generar proyectos estratégicos basados en las 3 áreas más críticas (menor puntaje)
   const areasCriticas = [...fugaPorCategoria].sort((a, b) => a.puntaje - b.puntaje).slice(0, 3);
   
-  const proyectosEstrategicos = areasCriticas.map(area => {
     let titulo = `Optimización en ${area.categoria}`;
     let descripcion = `Implementación de mejores prácticas y controles de gestión para cerrar la brecha operativa en ${area.categoria.toLowerCase()}.`;
     let impacto = 'Alto';
     let plazo = 'Corto Plazo (3-6 meses)';
+    let kpiSugerido = 'Tasa de cumplimiento (%)';
 
     if (area.categoria.includes('Gobernanza')) {
       titulo = 'Diseño de Gobierno Corporativo y OKRs';
       descripcion = 'Definición de roles C-Level, comités de dirección y tableros de control directivo.';
       plazo = 'Mediano Plazo (6-9 meses)';
+      kpiSugerido = 'EBITDA vs Presupuesto, % Asistencia Directorio';
     } else if (area.categoria.includes('Licitaciones')) {
       titulo = 'Reingeniería del Proceso de Pricing y Contratos';
       descripcion = 'Desarrollo de un modelo de costeo predictivo y control de cambios de alcance.';
+      kpiSugerido = '% Desviación Margen Bruto, Tasa de Win-Loss';
     } else if (area.categoria.includes('Personas')) {
       titulo = 'Plan de Retención de Talento Crítico';
       descripcion = 'Mapeo de competencias clave, planes de sucesión y esquema de incentivos alineados al EBITDA.';
+      kpiSugerido = 'Índice de Rotación Crítica, Clima Laboral (%)';
     } else if (area.categoria.includes('Operaciones')) {
       titulo = 'Control de Excelencia Operacional en Terreno';
       descripcion = 'Implementación de rutinas de supervisión y KPIs de productividad para evitar multas.';
+      kpiSugerido = 'OEE (Efectividad Total), Costo por Multas ($)';
     } else if (area.categoria.includes('Financiera')) {
       titulo = 'Implementación de Modelo de Gestión de Liquidez';
       descripcion = 'Desarrollo de proyecciones de flujo de caja a 12 meses y optimización de capital de trabajo.';
       plazo = 'Corto Plazo (3 meses)';
+      kpiSugerido = 'Días de Cuentas por Cobrar (DSO), Working Capital';
     } else if (area.categoria.includes('Comercialización')) {
       titulo = 'Estrategia de Diversificación de Ingresos';
       descripcion = 'Plan de expansión comercial (B2B) y fidelización para disminuir la concentración de cartera.';
       plazo = 'Largo Plazo (9-12 meses)';
+      kpiSugerido = 'Concentración Cliente Mayor (%), CAC';
     } else if (area.categoria.includes('Tecnología')) {
       titulo = 'Plan Director de Transformación Digital (ERP/BI)';
       descripcion = 'Levantamiento funcional y hoja de ruta para la unificación de datos y reportabilidad.';
       plazo = 'Largo Plazo (12-18 meses)';
+      kpiSugerido = '% Adopción Sistema, Uptime Crítico';
     }
 
-    return { titulo, descripcion, impacto, plazo };
+    return { titulo, descripcion, impacto, plazo, kpiSugerido };
   });
 
   return {

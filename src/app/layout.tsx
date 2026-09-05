@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -8,9 +10,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="h-full antialiased dark">
+    <html lang="es" className="h-full antialiased dark scroll-smooth">
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+        <Navbar />
+        <main className="flex-1 flex flex-col">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ResultadoDiagnostico } from '@/lib/types';
+import { Target, TrendingUp, AlertTriangle } from 'lucide-react';
 
 export default function ResultadoPage() {
   const router = useRouter();
@@ -44,86 +45,122 @@ export default function ResultadoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8 print:bg-white print:text-black">
-      <div className="max-w-5xl mx-auto space-y-12">
+    <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 lg:px-8 print:bg-white print:text-black print:p-0">
+      <div className="max-w-5xl mx-auto space-y-12 print:space-y-8">
         
-        {/* Header - Print Only */}
-        <div className="hidden print:block text-center mb-8 border-b pb-4">
-          <h1 className="text-3xl font-bold">Reporte Ejecutivo de Fuga de EBITDA</h1>
-          <p className="text-lg">{resultado.empresa.razonSocial} | {resultado.empresa.rubro}</p>
+        {/* Header - Print Only Corporate Header */}
+        <div className="hidden print:flex justify-between items-center mb-8 border-b-2 border-black pb-6 mt-8">
+          <div>
+            <h1 className="text-3xl font-black text-black tracking-tighter">
+              SIREN<span className="font-light">MG</span>
+            </h1>
+            <p className="text-sm font-semibold uppercase tracking-widest text-gray-500">Democratizando la Dirección Estratégica</p>
+          </div>
+          <div className="text-right">
+            <h2 className="text-xl font-bold">Reporte de Fuga de EBITDA</h2>
+            <p className="text-md text-gray-600">{resultado.empresa.razonSocial} | {resultado.empresa.rubro}</p>
+          </div>
         </div>
 
         {/* Hero Impact Card */}
-        <section className="bg-card border border-border rounded-3xl p-8 md:p-12 text-center shadow-2xl relative overflow-hidden print:border-black print:shadow-none print:bg-transparent">
+        <section className="bg-card border border-border rounded-3xl p-8 md:p-12 text-center shadow-2xl relative overflow-hidden print:border-black print:shadow-none print:bg-transparent print:rounded-none print:p-6 print:border-2">
           <div className="absolute inset-0 bg-gradient-to-br from-destructive/10 to-transparent pointer-events-none print:hidden"></div>
-          <h2 className="text-xl md:text-2xl text-muted-foreground mb-4 font-medium print:text-black">Estás perdiendo</h2>
-          <div className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-destructive to-accent mb-6 print:text-black">
-            {formatCurrency(resultado.fugaTotal, resultado.empresa.moneda)} <span className="text-3xl md:text-5xl text-foreground print:text-black">al año</span>
+          <h2 className="text-xl md:text-2xl text-muted-foreground mb-4 font-medium print:text-black print:font-bold">Estimación de Pérdida Anual Operativa</h2>
+          <div className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-destructive to-accent mb-6 print:text-black print:bg-none flex items-center justify-center gap-4">
+            <AlertTriangle className="w-12 h-12 text-destructive print:text-black" />
+            {formatCurrency(resultado.fugaTotal, resultado.empresa.moneda)}
           </div>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto print:text-black">
-            por fricción interna, procesos ineficientes y falta de alineación estratégica.
+            Fuga de liquidez proyectada debido a fricción interna, procesos ineficientes y falta de alineación estratégica (brechas en {resultado.nivelMadurezTexto}).
           </p>
-          <div className="mt-8 inline-block px-6 py-3 bg-background border border-border rounded-full print:border-black">
-            <span className="font-semibold text-primary">Nivel de Madurez: </span>
-            <span className="font-bold">{resultado.nivelMadurezTexto} ({resultado.nivelMadurez.toFixed(1)}/5.0)</span>
+          <div className="mt-8 inline-block px-8 py-4 bg-background border border-border rounded-xl print:border-black print:bg-gray-100">
+            <span className="font-semibold text-primary print:text-black">Nivel de Madurez Operacional: </span>
+            <span className="font-bold text-xl">{resultado.nivelMadurez.toFixed(1)} / 5.0</span>
           </div>
         </section>
 
-        {/* Breakdown by Category */}
-        <section>
-          <h3 className="text-2xl font-bold mb-6 print:text-black">Desglose de Fuga por Área</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resultado.fugaPorCategoria.map((cat, idx) => (
-              <div key={idx} className="bg-card border border-border rounded-xl p-6 print:border-gray-400 print:bg-transparent">
-                <div className="flex justify-between items-start mb-4">
-                  <h4 className="font-bold text-lg">{cat.categoria}</h4>
-                  <span className={`text-xs font-bold px-2 py-1 rounded border ${getCriticidadColor(cat.nivelCriticidad)} print:text-black print:border-black`}>
-                    {cat.nivelCriticidad}
-                  </span>
-                </div>
-                
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-muted-foreground print:text-gray-600">Puntaje</span>
-                    <span className="font-bold">{cat.puntaje.toFixed(1)} / 5</span>
+        {/* Strategic Projects (BSC Format) */}
+        <section className="print:break-inside-avoid">
+          <div className="flex items-center gap-3 mb-6">
+            <Target className="w-8 h-8 text-primary print:text-black" />
+            <h3 className="text-2xl font-bold print:text-black">Proyectos Estratégicos Recomendados (Fase 1)</h3>
+          </div>
+          <p className="text-muted-foreground mb-6 print:text-black">
+            Iniciativas priorizadas por impacto directo al EBITDA, estructuradas bajo metodología Balanced Scorecard (BSC).
+          </p>
+          
+          <div className="space-y-6">
+            {resultado.proyectosEstrategicos.map((proj, idx) => (
+              <div key={idx} className="bg-background border border-border rounded-xl p-6 relative overflow-hidden print:border-black print:bg-transparent">
+                <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary print:bg-black"></div>
+                <div className="flex flex-col md:flex-row gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded print:bg-gray-200 print:text-black">INICIATIVA {idx + 1}</span>
+                      <h4 className="text-xl font-bold text-foreground print:text-black">{proj.titulo}</h4>
+                    </div>
+                    <p className="text-muted-foreground print:text-gray-800 mb-4">{proj.descripcion}</p>
+                    
+                    {proj.kpiSugerido && (
+                      <div className="inline-flex items-center gap-2 bg-secondary/50 border border-border px-4 py-2 rounded-lg text-sm print:border-black print:bg-gray-100">
+                        <TrendingUp className="w-4 h-4 text-accent print:text-black" />
+                        <span className="font-semibold text-muted-foreground print:text-black">KPI a medir:</span>
+                        <span className="text-foreground font-bold print:text-black">{proj.kpiSugerido}</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="w-full h-2 bg-background rounded-full overflow-hidden print:bg-gray-200">
-                    <div 
-                      className="h-full bg-primary"
-                      style={{ width: `${(cat.puntaje / 5) * 100}%` }}
-                    ></div>
+                  
+                  <div className="flex flex-row md:flex-col gap-2 min-w-[160px]">
+                    <div className="flex-1 bg-card border border-border rounded-lg p-3 text-center print:border-gray-300">
+                      <span className="block text-xs text-muted-foreground uppercase print:text-gray-600">Retorno / Impacto</span>
+                      <span className="font-bold text-accent print:text-black">{proj.impacto}</span>
+                    </div>
+                    <div className="flex-1 bg-card border border-border rounded-lg p-3 text-center print:border-gray-300">
+                      <span className="block text-xs text-muted-foreground uppercase print:text-gray-600">Horizonte</span>
+                      <span className="font-bold text-foreground print:text-black">{proj.plazo}</span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="pt-4 border-t border-border print:border-gray-300">
-                  <span className="text-sm text-muted-foreground print:text-gray-600">Impacto Estimado</span>
-                  <p className="text-2xl font-bold text-accent print:text-black">
-                    {formatCurrency(cat.fuga, resultado.empresa.moneda)}
-                  </p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Strategic Projects */}
-        <section>
-          <h3 className="text-2xl font-bold mb-6 print:text-black">Plan de Acción Recomendado</h3>
-          <div className="space-y-4">
-            {resultado.proyectosEstrategicos.map((proj, idx) => (
-              <div key={idx} className="bg-card border border-border rounded-xl p-6 flex flex-col md:flex-row gap-6 items-start print:border-gray-400 print:bg-transparent">
-                <div className="flex-1">
-                  <h4 className="text-xl font-bold text-primary mb-2 print:text-black">{proj.titulo}</h4>
-                  <p className="text-muted-foreground print:text-gray-700">{proj.descripcion}</p>
+        {/* Breakdown by Category */}
+        <section className="print:break-before-page pt-8">
+          <h3 className="text-2xl font-bold mb-6 print:text-black">Matriz de Brechas (Detalle de Fuga)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {resultado.fugaPorCategoria.map((cat, idx) => (
+              <div key={idx} className="bg-card border border-border rounded-xl p-6 print:border-gray-400 print:bg-transparent">
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="font-bold text-lg leading-tight print:text-black">{cat.categoria}</h4>
                 </div>
-                <div className="flex flex-col gap-2 min-w-[150px]">
-                  <div className="bg-background border border-border rounded-lg p-3 text-center print:border-gray-300">
-                    <span className="block text-xs text-muted-foreground print:text-gray-600">Impacto</span>
-                    <span className="font-bold text-accent print:text-black">{proj.impacto}</span>
+                
+                <div className="mb-4">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-muted-foreground print:text-gray-600">Madurez actual</span>
+                    <span className="font-bold print:text-black">{cat.puntaje.toFixed(1)} / 5.0</span>
                   </div>
-                  <div className="bg-background border border-border rounded-lg p-3 text-center print:border-gray-300">
-                    <span className="block text-xs text-muted-foreground print:text-gray-600">Plazo</span>
-                    <span className="font-bold">{proj.plazo}</span>
+                  <div className="w-full h-2 bg-background rounded-full overflow-hidden print:bg-gray-200">
+                    <div 
+                      className={`h-full ${cat.puntaje <= 2 ? 'bg-destructive' : cat.puntaje <= 3 ? 'bg-accent' : 'bg-green-500'} print:bg-black`}
+                      style={{ width: `${(cat.puntaje / 5) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border flex justify-between items-end print:border-gray-300">
+                  <div>
+                    <span className="text-xs text-muted-foreground uppercase print:text-gray-600">Estado</span>
+                    <p className={`font-bold text-sm ${getCriticidadColor(cat.nivelCriticidad)} print:text-black print:border-none`}>
+                      {cat.nivelCriticidad}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-muted-foreground uppercase print:text-gray-600">Fuga</span>
+                    <p className="text-xl font-bold text-foreground print:text-black">
+                      {formatCurrency(cat.fuga, resultado.empresa.moneda)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -133,30 +170,30 @@ export default function ResultadoPage() {
 
         {/* AI Analysis */}
         {resultado.analisisIA && (
-          <section className="bg-card/50 border border-primary/30 rounded-2xl p-8 print:border-black print:bg-transparent">
-            <div className="flex items-center gap-3 mb-4">
+          <section className="bg-card/30 border border-primary/30 rounded-2xl p-8 print:border-black print:bg-transparent print:mt-12">
+            <div className="flex items-center gap-3 mb-4 border-b border-border pb-4 print:border-black">
               <span className="text-2xl">🧠</span>
-              <h3 className="text-xl font-bold text-primary print:text-black">Análisis Estratégico</h3>
+              <h3 className="text-xl font-bold text-primary print:text-black">Síntesis Estratégica (Generado por IA)</h3>
             </div>
-            <blockquote className="text-lg italic text-muted-foreground border-l-4 border-primary pl-4 print:text-gray-800 print:border-black">
-              "{resultado.analisisIA}"
-            </blockquote>
+            <p className="text-lg text-foreground whitespace-pre-wrap leading-relaxed print:text-black">
+              {resultado.analisisIA}
+            </p>
           </section>
         )}
 
         {/* Call to Action */}
-        <section className="flex flex-col sm:flex-row justify-center gap-4 pt-12 print:hidden">
+        <section className="flex flex-col sm:flex-row justify-center gap-4 pt-12 pb-24 print:hidden">
           <button 
-            className="px-8 py-4 bg-primary text-background font-bold rounded-lg hover:bg-opacity-90 transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)]"
+            className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-lg hover:bg-primary/90 transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)]"
             onClick={() => window.open('https://calendly.com/siren-mg', '_blank')}
           >
-            Agendar Sesión de Estrategia (30 min)
+            Agendar Sesión de Asesoría (Fase 2)
           </button>
           <button 
             className="px-8 py-4 bg-transparent border border-border text-foreground font-bold rounded-lg hover:bg-card transition-all"
             onClick={() => window.print()}
           >
-            Descargar Reporte PDF
+            Descargar Reporte SIREN (PDF)
           </button>
         </section>
 
