@@ -191,6 +191,21 @@ export default function ResultadoPage() {
           </button>
           <button 
             className="px-8 py-4 bg-transparent border border-border text-foreground font-bold rounded-lg hover:bg-card transition-all"
+            onClick={() => {
+              // Simular un "volver atrás" editando el borrador para que empiece en la última pregunta
+              const borrador = sessionStorage.getItem('diagnosticoBorrador');
+              if (borrador) {
+                const parsed = JSON.parse(borrador);
+                parsed.step = 7; // volver a la ultima pregunta
+                sessionStorage.setItem('diagnosticoBorrador', JSON.stringify(parsed));
+              }
+              router.push('/diagnostico');
+            }}
+          >
+            Modificar Respuestas
+          </button>
+          <button 
+            className="px-8 py-4 bg-transparent border border-border text-foreground font-bold rounded-lg hover:bg-card transition-all"
             onClick={() => window.print()}
           >
             Descargar Reporte SIREN (PDF)

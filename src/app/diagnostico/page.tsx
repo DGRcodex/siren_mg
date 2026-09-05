@@ -22,6 +22,30 @@ export default function DiagnosticoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const totalPreguntas = preguntasSocraticas.length;
+  
+  // Cargar estado guardado al iniciar
+  useEffect(() => {
+    const guardado = sessionStorage.getItem('diagnosticoBorrador');
+    if (guardado) {
+      try {
+        const parsed = JSON.parse(guardado);
+        if (parsed.empresa) setEmpresa(parsed.empresa);
+        if (parsed.respuestas) setRespuestas(parsed.respuestas);
+        if (parsed.step !== undefined) setStep(parsed.step);
+      } catch (e) {
+        console.error('Error loading draft', e);
+      }
+    }
+  }, []);
+
+  // Guardar borrador cada vez que cambia algo
+  useEffect(() => {
+    // No guardar si estamos enviando
+    if (step <= totalPreguntas) {
+      sessionStorage.setItem('diagnosticoBorrador', JSON.stringify({ empresa, respuestas, step }));
+    }
+  }, [empresa, respuestas, step, totalPreguntas]);
+
   const preguntaActual = step > 0 && step <= totalPreguntas ? preguntasSocraticas[step - 1] : null;
 
   const handleEmpresaSubmit = (e: React.FormEvent) => {

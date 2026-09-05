@@ -65,6 +65,7 @@ export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSo
   // 5. Generar proyectos estratégicos basados en las 3 áreas más críticas (menor puntaje)
   const areasCriticas = [...fugaPorCategoria].sort((a, b) => a.puntaje - b.puntaje).slice(0, 3);
   
+  const proyectosEstrategicos = areasCriticas.map(area => {
     let titulo = `Optimización en ${area.categoria}`;
     let descripcion = `Implementación de mejores prácticas y controles de gestión para cerrar la brecha operativa en ${area.categoria.toLowerCase()}.`;
     let impacto = 'Alto';
