@@ -1,0 +1,67 @@
+import { PreguntaSocratica } from './types';
+
+export const preguntasSocraticas: PreguntaSocratica[] = [
+  {
+    id: 'q1',
+    categoria: 'Gobernanza y Roles C-Level',
+    icono: '👑',
+    pregunta: '¿Existe claridad absoluta, respaldada por indicadores de desempeño (KPIs), sobre las responsabilidades de los líderes (C-Level) en la toma de decisiones estratégicas?',
+    descripcionNivel0: 'Caos total, sin estructura. Las decisiones se toman por intuición y no existen roles definidos ni indicadores de éxito.',
+    descripcionNivel5: 'Gobernanza de clase mundial. Roles C-Level empoderados, con OKRs alineados al directorio y gobierno corporativo sólido.',
+    pesoEbitda: 0.20,
+  },
+  {
+    id: 'q2',
+    categoria: 'Licitaciones y Control de Desvíos de Margen',
+    icono: '📊',
+    pregunta: '¿Qué tan robusto es su proceso de análisis de precios unitarios y control de cambios de alcance para evitar desvíos en el margen proyectado?',
+    descripcionNivel0: 'Sin control. Las licitaciones se ganan por precio sin análisis profundo, y los sobrecostos no se detectan a tiempo.',
+    descripcionNivel5: 'Control riguroso. Modelo de pricing predictivo, gestión de contratos ágil y detección en tiempo real de desviaciones de margen.',
+    pesoEbitda: 0.18,
+  },
+  {
+    id: 'q3',
+    categoria: 'Gestión de Personas y Competencias Clave',
+    icono: '👥',
+    pregunta: '¿La organización retiene al talento crítico y desarrolla planes de sucesión para las posiciones que sostienen la continuidad operacional?',
+    descripcionNivel0: 'Alta rotación, sin planes de retención. El conocimiento crítico reside en personas específicas sin respaldo.',
+    descripcionNivel5: 'Gestión de talento estratégica. Planes de carrera, matriz de competencias viva y retención de talento clave por sobre el mercado.',
+    pesoEbitda: 0.15,
+  },
+  {
+    id: 'q4',
+    categoria: 'Control de Operaciones y Multas en Faena',
+    icono: '⚙️',
+    pregunta: '¿Existe una supervisión sistemática de la ejecución en terreno que anticipe retrasos operacionales y evite la aplicación de multas?',
+    descripcionNivel0: 'Reactividad total. Las operaciones sufren paradas constantes y las multas por incumplimiento son habituales.',
+    descripcionNivel5: 'Operaciones resilientes. Monitoreo predictivo de KPIs operativos, cero multas en los últimos 24 meses y excelencia en la ejecución.',
+    pesoEbitda: 0.15,
+  },
+  {
+    id: 'q5',
+    categoria: 'Planificación Financiera y Flujo de Caja',
+    icono: '💰',
+    pregunta: '¿Cuenta con un modelo financiero que proyecte escenarios de estrés de liquidez (flujo de caja) a 12 meses de manera confiable?',
+    descripcionNivel0: 'Gestión ciega. Se vive el día a día financiero, sin visibilidad del capital de trabajo ni proyecciones de caja.',
+    descripcionNivel5: 'Finanzas estratégicas. Modelamiento de escenarios de estrés, optimización del ciclo de caja y políticas de tesorería eficientes.',
+    pesoEbitda: 0.12,
+  },
+  {
+    id: 'q6',
+    categoria: 'Comercialización y Cartera de Clientes',
+    icono: '🤝',
+    pregunta: '¿La empresa cuenta con una estrategia de diversificación que mitigue el riesgo de concentración de ingresos en pocos clientes o mandantes?',
+    descripcionNivel0: 'Alta dependencia. Más del 80% de los ingresos provienen de 1 o 2 clientes, sin esfuerzo activo por diversificar.',
+    descripcionNivel5: 'Cartera diversificada y rentable. Estrategia B2B sofisticada, baja dependencia de un solo mandante y alto lifetime value (LTV).',
+    pesoEbitda: 0.10,
+  },
+  {
+    id: 'q7',
+    categoria: 'Tecnología y Sistemas de Información',
+    icono: '💻',
+    pregunta: '¿Las plataformas tecnológicas actuales (ERP, CRM) entregan una única fuente de verdad en tiempo real para la toma de decisiones gerenciales?',
+    descripcionNivel0: 'Silos de información. Uso excesivo de hojas de cálculo manuales, datos inconsistentes y sin integración de sistemas.',
+    descripcionNivel5: 'Transformación digital madura. Arquitectura de datos centralizada, ERP plenamente integrado y dashboards automatizados (BI).',
+    pesoEbitda: 0.10,
+  }
+];
