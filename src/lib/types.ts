@@ -1,4 +1,5 @@
 export type Moneda = 'CLP' | 'USD';
+export type Language = 'es' | 'en' | 'he';
 
 export interface EmpresaData {
   razonSocial: string;

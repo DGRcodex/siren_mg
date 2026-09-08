@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { EmpresaData, RespuestaSocratica, ResultadoDiagnostico } from '@/lib/types';
-import { preguntasSocraticas } from '@/lib/preguntas';
+import { getPreguntasSocraticas } from '@/lib/preguntas';
 import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function DiagnosticoPage() {
   const router = useRouter();
+  const { language, t } = useLanguage();
+  const preguntasSocraticas = getPreguntasSocraticas(language);
+  const totalPreguntas = preguntasSocraticas.length;
+  
   const [step, setStep] = useState(0); 
   const [empresa, setEmpresa] = useState<EmpresaData>({
     razonSocial: '',
@@ -16,13 +21,9 @@ export default function DiagnosticoPage() {
     moneda: 'CLP',
   });
   
-  // Guardamos las respuestas temporalmente antes de enviarlas. 
-  // Ahora el index del array es `step - 1`.
-  const [respuestas, setRespuestas] = useState<number[]>(Array(preguntasSocraticas.length).fill(-1));
+  const [respuestas, setRespuestas] = useState<number[]>(Array(totalPreguntas).fill(-1));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const totalPreguntas = preguntasSocraticas.length;
-  
   // Cargar estado guardado al iniciar
   useEffect(() => {
     const guardado = sessionStorage.getItem('diagnosticoBorrador');
@@ -40,7 +41,6 @@ export default function DiagnosticoPage() {
 
   // Guardar borrador cada vez que cambia algo
   useEffect(() => {
-    // No guardar si estamos enviando
     if (step <= totalPreguntas) {
       sessionStorage.setItem('diagnosticoBorrador', JSON.stringify({ empresa, respuestas, step }));
     }
@@ -77,7 +77,7 @@ export default function DiagnosticoPage() {
 
   const finalizarDiagnostico = async () => {
     setIsSubmitting(true);
-    setStep(totalPreguntas + 1); // Loading state
+    setStep(totalPreguntas + 1);
 
     const payloadRespuestas: RespuestaSocratica[] = respuestas.map((puntaje, index) => ({
       preguntaId: preguntasSocraticas[index].id,
@@ -85,7 +85,7 @@ export default function DiagnosticoPage() {
     }));
 
     try {
-      const payload = { empresa, respuestas: payloadRespuestas };
+      const payload = { empresa, respuestas: payloadRespuestas, language };
       const response = await fetch('/api/diagnostico', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,10 +101,13 @@ export default function DiagnosticoPage() {
     } catch (error) {
       console.error('Error:', error);
       alert('Hubo un error al procesar el diagnóstico. Por favor intenta de nuevo.');
-      setStep(totalPreguntas); // Volver
+      setStep(totalPreguntas);
       setIsSubmitting(false);
     }
   };
+
+  const rtlArrowRight = language === 'he' ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />;
+  const rtlArrowLeft = language === 'he' ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />;
 
   // Render Step 0: Empresa Data
   if (step === 0) {
@@ -112,39 +115,39 @@ export default function DiagnosticoPage() {
       <div className="min-h-screen flex items-center justify-center bg-background p-4 sm:p-8">
         <div className="w-full max-w-2xl bg-card border border-border rounded-2xl p-8 sm:p-12 shadow-xl">
           <div className="mb-8 border-b border-border pb-6">
-            <h1 className="text-3xl font-bold text-foreground mb-3">Perfilamiento Estratégico</h1>
-            <p className="text-muted-foreground text-lg">Para cuantificar tu fuga de EBITDA, necesitamos un perfil básico.</p>
+            <h1 className="text-3xl font-bold text-foreground mb-3">{t.diag.step0Title}</h1>
+            <p className="text-muted-foreground text-lg">{t.diag.step0Sub}</p>
           </div>
           
           <form onSubmit={handleEmpresaSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Razón Social o Nombre Fantasía</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">{t.diag.formName}</label>
               <input
                 type="text"
                 required
                 className="w-full bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg"
                 value={empresa.razonSocial}
                 onChange={(e) => setEmpresa({ ...empresa, razonSocial: e.target.value })}
-                placeholder="Ej: Minera ABC Spa"
+                placeholder={t.diag.formNamePlaceholder}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Rubro / Industria</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">{t.diag.formIndustry}</label>
               <select
                 className="w-full bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg"
                 value={empresa.rubro}
                 onChange={(e) => setEmpresa({ ...empresa, rubro: e.target.value })}
               >
-                <option value="Contratista Minero">Contratista Minero</option>
-                <option value="Industrial / Manufactura">Industrial / Manufactura</option>
-                <option value="Servicios Profesionales">Servicios Profesionales</option>
-                <option value="Otro">Otro</option>
+                <option value="Contratista Minero">{t.diag.formIndOption1}</option>
+                <option value="Industrial / Manufactura">{t.diag.formIndOption2}</option>
+                <option value="Servicios Profesionales">{t.diag.formIndOption3}</option>
+                <option value="Otro">{t.diag.formIndOption4}</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-foreground mb-2">Facturación Anual Estimada</label>
+              <label className="block text-sm font-semibold text-foreground mb-2">{t.diag.formRev}</label>
               <div className="flex gap-4">
                 <select
                   className="w-1/4 bg-background border border-border rounded-lg p-4 text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors text-lg font-medium"
@@ -164,7 +167,7 @@ export default function DiagnosticoPage() {
                   placeholder="0"
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">La facturación se usa exclusivamente para el algoritmo de impacto.</p>
+              <p className="text-xs text-muted-foreground mt-2">{t.diag.formRevSub}</p>
             </div>
 
             <div className="pt-6">
@@ -172,7 +175,7 @@ export default function DiagnosticoPage() {
                 type="submit"
                 className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-lg p-4 hover:bg-primary/90 transition-all shadow-lg text-lg"
               >
-                Iniciar Evaluación <ArrowRight className="w-5 h-5" />
+                {t.diag.formBtn} {rtlArrowRight}
               </button>
             </div>
           </form>
@@ -186,9 +189,9 @@ export default function DiagnosticoPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4 text-center">
         <div className="w-16 h-16 border-4 border-muted-foreground border-t-primary rounded-full animate-spin mb-8"></div>
-        <h2 className="text-2xl font-bold text-foreground mb-4">Calculando tu Fuga de EBITDA...</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-4">{t.diag.loadingTitle}</h2>
         <p className="text-muted-foreground text-lg max-w-md mx-auto">
-          Cruzando respuestas con la matriz de madurez corporativa SIREN y generando plan de contingencia.
+          {t.diag.loadingSub}
         </p>
       </div>
     );
@@ -198,7 +201,6 @@ export default function DiagnosticoPage() {
   if (preguntaActual) {
     const progreso = ((step - 1) / totalPreguntas) * 100;
     const puntajeSeleccionado = respuestas[step - 1];
-
     const esValidoParaAvanzar = puntajeSeleccionado !== -1;
 
     return (
@@ -209,9 +211,9 @@ export default function DiagnosticoPage() {
           <div className="mb-12 mt-8">
             <div className="flex justify-between items-center mb-4">
               <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                Factor {step} de {totalPreguntas}
+                {t.diag.factor} {step} {t.diag.of} {totalPreguntas}
               </span>
-              <span className="text-sm font-semibold text-primary">{Math.round(progreso)}% Completado</span>
+              <span className="text-sm font-semibold text-primary">{Math.round(progreso)}% {t.diag.completed}</span>
             </div>
             <div className="w-full h-2 bg-card rounded-full overflow-hidden">
               <div 
@@ -234,7 +236,7 @@ export default function DiagnosticoPage() {
 
           {/* Scale 0-5 */}
           <div className="flex-1">
-            <p className="text-muted-foreground mb-6 font-medium">Selecciona tu nivel de madurez actual (0 = Crítico, 5 = Excelencia):</p>
+            <p className="text-muted-foreground mb-6 font-medium">{t.diag.scalePrompt}</p>
             
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-8">
               {[0, 1, 2, 3, 4, 5].map((puntaje) => {
@@ -262,15 +264,14 @@ export default function DiagnosticoPage() {
               })}
             </div>
 
-            {/* Clearer Explanations (Mauricio's feedback) */}
             <div className="bg-card border border-border rounded-xl p-6 mb-12 flex flex-col md:flex-row gap-6 justify-between">
               <div className="md:w-1/2">
-                <span className="inline-block px-2 py-1 bg-destructive/10 text-destructive text-xs font-bold rounded mb-2">NIVEL 0</span>
+                <span className="inline-block px-2 py-1 bg-destructive/10 text-destructive text-xs font-bold rounded mb-2">{t.diag.level0}</span>
                 <p className="text-sm text-muted-foreground">{preguntaActual.descripcionNivel0}</p>
               </div>
               <div className="hidden md:block w-px bg-border"></div>
               <div className="md:w-1/2">
-                <span className="inline-block px-2 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded mb-2">NIVEL 5</span>
+                <span className="inline-block px-2 py-1 bg-green-500/10 text-green-500 text-xs font-bold rounded mb-2">{t.diag.level5}</span>
                 <p className="text-sm text-muted-foreground">{preguntaActual.descripcionNivel5}</p>
               </div>
             </div>
@@ -282,7 +283,7 @@ export default function DiagnosticoPage() {
               onClick={irAtras}
               className="flex items-center gap-2 px-6 py-3 text-muted-foreground hover:text-foreground font-medium transition-colors"
             >
-              <ArrowLeft className="w-5 h-5" /> Atrás
+              {rtlArrowLeft} {t.diag.btnBack}
             </button>
             
             <button
@@ -294,7 +295,7 @@ export default function DiagnosticoPage() {
                   : 'bg-muted text-muted-foreground cursor-not-allowed opacity-50'
               }`}
             >
-              {step === totalPreguntas ? 'Generar Reporte' : 'Siguiente'} <ArrowRight className="w-5 h-5" />
+              {step === totalPreguntas ? t.diag.btnGenerate : t.diag.btnNext} {rtlArrowRight}
             </button>
           </div>
 

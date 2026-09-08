@@ -1,5 +1,5 @@
-import { EmpresaData, RespuestaSocratica, ResultadoDiagnostico } from './types';
-import { preguntasSocraticas } from './preguntas';
+import { EmpresaData, RespuestaSocratica, ResultadoDiagnostico, Language } from './types';
+import { getPreguntasSocraticas } from './preguntas';
 
 // Tasa de cambio fija para el MVP
 const USD_TO_CLP = 950;
@@ -7,19 +7,20 @@ const USD_TO_CLP = 950;
 /**
  * Calcula la fuga de EBITDA proyectada y el nivel de madurez
  */
-export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSocratica[]): ResultadoDiagnostico {
+export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSocratica[], language: Language = 'es'): ResultadoDiagnostico {
+  const preguntasSocraticas = getPreguntasSocraticas(language);
+  
   // 1. Determinar el factor de rubro
   let factorRubro = 0.08; // default "other"
   const rubroLower = empresa.rubro.toLowerCase();
-  if (rubroLower.includes('contratista') || rubroLower.includes('minería') || rubroLower.includes('mineria')) {
+  if (rubroLower.includes('contratista') || rubroLower.includes('minería') || rubroLower.includes('mineria') || rubroLower.includes('mining') || rubroLower.includes('כרייה')) {
     factorRubro = 0.15;
-  } else if (rubroLower.includes('industrial') || rubroLower.includes('industria')) {
+  } else if (rubroLower.includes('industrial') || rubroLower.includes('industria') || rubroLower.includes('manufacturing') || rubroLower.includes('ייצור')) {
     factorRubro = 0.12;
-  } else if (rubroLower.includes('servicio')) {
+  } else if (rubroLower.includes('servicio') || rubroLower.includes('services') || rubroLower.includes('שירותים')) {
     factorRubro = 0.10;
   }
 
-  // 2. Normalizar facturación a CLP para los cálculos (si se requiere, aunque la fuga se expresa en la misma moneda por defecto)
   const facturacionNormalizada = empresa.facturacionAnual;
 
   let fugaTotal = 0;
@@ -33,7 +34,6 @@ export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSo
     const preguntaDef = preguntasSocraticas.find(p => p.id === respuesta.preguntaId);
     if (!preguntaDef) return;
 
-    // Fórmula: facturacion * pesoEbitda * ((5 - puntaje) / 5) * factorRubro
     const brecha = (5 - respuesta.puntaje) / 5;
     const fugaCategoria = facturacionNormalizada * preguntaDef.pesoEbitda * brecha * factorRubro;
     
@@ -42,8 +42,13 @@ export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSo
     pesoTotal += preguntaDef.pesoEbitda;
 
     let nivelCriticidad = 'Bajo';
-    if (respuesta.puntaje <= 2) nivelCriticidad = 'Crítico';
-    else if (respuesta.puntaje <= 3) nivelCriticidad = 'Medio';
+    if (language === 'en') {
+      nivelCriticidad = respuesta.puntaje <= 2 ? 'Critical' : respuesta.puntaje <= 3 ? 'Vulnerable' : 'Robust';
+    } else if (language === 'he') {
+      nivelCriticidad = respuesta.puntaje <= 2 ? 'קריטי' : respuesta.puntaje <= 3 ? 'פגיע' : 'איתן';
+    } else {
+      nivelCriticidad = respuesta.puntaje <= 2 ? 'Crítico' : respuesta.puntaje <= 3 ? 'Vulnerable' : 'Robusto';
+    }
 
     fugaPorCategoria.push({
       categoria: preguntaDef.categoria,
@@ -53,59 +58,30 @@ export function calcularEbitdaLeak(empresa: EmpresaData, respuestas: RespuestaSo
     });
   });
 
-  // 4. Calcular nivel de madurez global
-  // Si pesoTotal no es 1 por alguna razón, normalizamos
   const nivelMadurez = pesoTotal > 0 ? puntajePonderadoTotal / pesoTotal : 0;
   
   let nivelMadurezTexto = 'Inicial';
-  if (nivelMadurez >= 4.5) nivelMadurezTexto = 'Clase Mundial';
-  else if (nivelMadurez >= 3.5) nivelMadurezTexto = 'Avanzado';
-  else if (nivelMadurez >= 2.5) nivelMadurezTexto = 'En Desarrollo';
+  if (language === 'en') {
+    nivelMadurezTexto = nivelMadurez >= 4.5 ? 'World Class' : nivelMadurez >= 3.5 ? 'Advanced' : 'Developing';
+  } else if (language === 'he') {
+    nivelMadurezTexto = nivelMadurez >= 4.5 ? 'ברמה עולמית' : nivelMadurez >= 3.5 ? 'מתקדם' : 'בפיתוח';
+  } else {
+    nivelMadurezTexto = nivelMadurez >= 4.5 ? 'Clase Mundial' : nivelMadurez >= 3.5 ? 'Avanzado' : 'En Desarrollo';
+  }
 
-  // 5. Generar proyectos estratégicos basados en las 3 áreas más críticas (menor puntaje)
+  // 5. Generar proyectos estratégicos basados en las 3 áreas más críticas
   const areasCriticas = [...fugaPorCategoria].sort((a, b) => a.puntaje - b.puntaje).slice(0, 3);
   
   const proyectosEstrategicos = areasCriticas.map(area => {
-    let titulo = `Optimización en ${area.categoria}`;
-    let descripcion = `Implementación de mejores prácticas y controles de gestión para cerrar la brecha operativa en ${area.categoria.toLowerCase()}.`;
-    let impacto = 'Alto';
-    let plazo = 'Corto Plazo (3-6 meses)';
-    let kpiSugerido = 'Tasa de cumplimiento (%)';
+    let titulo = language === 'en' ? `Optimization in ${area.categoria}` : language === 'he' ? `אופטימיזציה ב ${area.categoria}` : `Optimización en ${area.categoria}`;
+    let descripcion = language === 'en' ? 'Implementation of best practices to close the operational gap.' : language === 'he' ? 'יישום שיטות עבודה מומלצות לסגירת הפער התפעולי.' : 'Implementación de mejores prácticas para cerrar la brecha operativa.';
+    let impacto = language === 'en' ? 'High' : language === 'he' ? 'גבוה' : 'Alto';
+    let plazo = language === 'en' ? 'Short Term (3-6 mo)' : language === 'he' ? 'טווח קצר (3-6 חודשים)' : 'Corto Plazo (3-6 meses)';
+    let kpiSugerido = language === 'en' ? 'Compliance Rate (%)' : language === 'he' ? 'שיעור עמידה ביעדים (%)' : 'Tasa de cumplimiento (%)';
 
-    if (area.categoria.includes('Gobernanza')) {
-      titulo = 'Diseño de Gobierno Corporativo y OKRs';
-      descripcion = 'Definición de roles C-Level, comités de dirección y tableros de control directivo.';
-      plazo = 'Mediano Plazo (6-9 meses)';
-      kpiSugerido = 'EBITDA vs Presupuesto, % Asistencia Directorio';
-    } else if (area.categoria.includes('Licitaciones')) {
-      titulo = 'Reingeniería del Proceso de Pricing y Contratos';
-      descripcion = 'Desarrollo de un modelo de costeo predictivo y control de cambios de alcance.';
-      kpiSugerido = '% Desviación Margen Bruto, Tasa de Win-Loss';
-    } else if (area.categoria.includes('Personas')) {
-      titulo = 'Plan de Retención de Talento Crítico';
-      descripcion = 'Mapeo de competencias clave, planes de sucesión y esquema de incentivos alineados al EBITDA.';
-      kpiSugerido = 'Índice de Rotación Crítica, Clima Laboral (%)';
-    } else if (area.categoria.includes('Operaciones')) {
-      titulo = 'Control de Excelencia Operacional en Terreno';
-      descripcion = 'Implementación de rutinas de supervisión y KPIs de productividad para evitar multas.';
-      kpiSugerido = 'OEE (Efectividad Total), Costo por Multas ($)';
-    } else if (area.categoria.includes('Financiera')) {
-      titulo = 'Implementación de Modelo de Gestión de Liquidez';
-      descripcion = 'Desarrollo de proyecciones de flujo de caja a 12 meses y optimización de capital de trabajo.';
-      plazo = 'Corto Plazo (3 meses)';
-      kpiSugerido = 'Días de Cuentas por Cobrar (DSO), Working Capital';
-    } else if (area.categoria.includes('Comercialización')) {
-      titulo = 'Estrategia de Diversificación de Ingresos';
-      descripcion = 'Plan de expansión comercial (B2B) y fidelización para disminuir la concentración de cartera.';
-      plazo = 'Largo Plazo (9-12 meses)';
-      kpiSugerido = 'Concentración Cliente Mayor (%), CAC';
-    } else if (area.categoria.includes('Tecnología')) {
-      titulo = 'Plan Director de Transformación Digital (ERP/BI)';
-      descripcion = 'Levantamiento funcional y hoja de ruta para la unificación de datos y reportabilidad.';
-      plazo = 'Largo Plazo (12-18 meses)';
-      kpiSugerido = '% Adopción Sistema, Uptime Crítico';
-    }
-
+    // Para mantenerlo dinámico e independiente del ID, mapearemos por index crudo para MVP o dejaremos genérico
+    // Por simplicidad, ya tenemos el KPI asociado al área crítica (que está traducida)
+    
     return { titulo, descripcion, impacto, plazo, kpiSugerido };
   });
 

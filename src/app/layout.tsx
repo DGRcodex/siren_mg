@@ -1,22 +1,32 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { Inter } from "next/font/google";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
-  title: "Siren MG | Toma el Manubrio de tu Empresa",
-  description: "Sistema de Gobernanza, Dirección Fraccional y Captura de EBITDA para empresas B2B en Chile.",
+  title: "Siren MG | Gobernanza Estratégica",
+  description: "Sistema Inteligente Relacional para captura de EBITDA.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="es" className="h-full antialiased dark scroll-smooth">
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Navbar />
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
-        <Footer />
+    <html lang="es" className="dark scroll-smooth">
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
+        <LanguageProvider>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );
