@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { EmpresaData, RespuestaSocratica } from '@/lib/types';
 import { calcularEbitdaLeak } from '@/lib/ebitdaEngine';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +15,27 @@ export async function POST(request: Request) {
     // 1. Ejecutar el motor de EBITDA
     const resultado = calcularEbitdaLeak(empresa, respuestas, language as any);
 
-    // 2. Intentar análisis con Gemini
+    // 2. Guardar el Lead en la Base de Datos (Supabase via Prisma)
+    try {
+      await prisma.diagnosticoLead.create({
+        data: {
+          razonSocial: empresa.razonSocial,
+          rubro: empresa.rubro,
+          facturacionAnual: empresa.facturacionAnual,
+          moneda: empresa.moneda,
+          nivelMadurez: resultado.nivelMadurez,
+          fugaTotal: resultado.fugaTotal,
+          idioma: language,
+          respuestasJson: JSON.stringify(respuestas)
+        }
+      });
+      console.log('Lead guardado exitosamente en BD.');
+    } catch (dbError) {
+      console.error('Error guardando en la Base de Datos (continuando con la respuesta):', dbError);
+      // No frenamos la respuesta al cliente si falla la base de datos temporalmente
+    }
+
+    // 3. Intentar análisis con Gemini
     const geminiApiKey = process.env.GEMINI_API_KEY;
     
     if (geminiApiKey) {
