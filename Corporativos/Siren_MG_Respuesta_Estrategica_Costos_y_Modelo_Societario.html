@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Siren MG - Respuestas Estratégicas y Modelo Societario</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1E293B;
+    background-color: #F8FAFC;
+    line-height: 1.65;
+    padding: 40px 20px;
+    margin: 0;
+  }
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    padding: 60px 80px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
+  }
+  h1 {
+    color: #0F172A;
+    font-size: 26px;
+    font-weight: 800;
+    border-bottom: 2px solid #0F172A;
+    padding-bottom: 12px;
+    margin-top: 0;
+  }
+  h2 {
+    color: #1E293B;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 36px;
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 8px;
+  }
+  h3 {
+    color: #334155;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 24px;
+  }
+  p, li {
+    font-size: 14.5px;
+    color: #334155;
+  }
+  blockquote {
+    background: #F1F5F9;
+    border-left: 4px solid #D97706;
+    margin: 20px 0;
+    padding: 14px 20px;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #0F172A;
+  }
+  pre {
+    background: #0F172A;
+    color: #F8FAFC;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 12.5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  code {
+    background: #F1F5F9;
+    color: #0F172A;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+  .table-container {
+    overflow-x: auto;
+    margin: 24px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th, td {
+    border: 1px solid #CBD5E1;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  th {
+    background: #0F172A;
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  tr:nth-child(even) {
+    background: #F8FAFC;
+  }
+  hr {
+    border: 0;
+    border-top: 1px solid #E2E8F0;
+    margin: 30px 0;
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .document { box-shadow: none; border: none; padding: 0; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+<h1>Siren MG: Respuestas Estratégicas, Arquitectura Dual (Web + App Móvil), Inteligencia Artificial, Análisis de Costos (TCO) y Modelo Societario</h1>
+<br/>
+<p><strong>Documento Corporativo, Técnico y de Alineación de Negocio</strong>  </p>
+<p><strong>Fecha:</strong> Septiembre 2026  </p>
+<p><strong>Preparado por:</strong> Daniel García Rojas (CTO & Arquitecto Principal, Sambalab / DGRcodex)  </p>
+<p><strong>Destinatarios:</strong> Mauricio Geldes Díaz (Siren MG), Pedro García Moretti (Director de Negocios y Operaciones, Sambalab)</p>
+<br/>
+<hr/>
+<br/>
+<h2>1. Resumen Ejecutivo y Entendimiento Doctrinal</h2>
+<br/>
+<p>Hemos analizado exhaustivamente el <strong>Manual Doctrinal SIREN MG (Versión 37)</strong>, las propuestas previas de arquitectura y monetización, y las precisiones enviadas por Mauricio Geldes en su correo. El entendimiento del proyecto es total:</p>
+<br/>
+<blockquote><strong>Tesis Central de Siren MG:</strong> Transformar la consultoría tradicional de dirección estratégica (lenta, cara y basada en horas-hombre) en <strong>Productized Consulting & SaaS de Gobernanza Estratégica</strong>. El sistema democratiza el acceso a la Dirección Fraccional (C-Suite as a Service) para empresas industriales y contratistas mineras mediante:</blockquote>
+<blockquote>1. Un <strong>Lead Magnet Socrático Web (Prediagnóstico)</strong> para captación masiva y cuantificación instantánea de la fuga de EBITDA en dinero real (CLP / USD).</blockquote>
+<blockquote>2. Un <strong>Diagnóstico Pagado</strong> con roadmap de proyectos estratégicos de mitigación y flanco débil.</blockquote>
+<blockquote>3. Un <strong>Ecosistema Dual: Web Corporativa + App Móvil Nativa (iOS & Android)</strong> con el <em>Cockpit 360</em> instalado en el teléfono del Gerente General para monitoreo continuo 24/7 y notificaciones push críticas.</blockquote>
+<blockquote>4. Un <strong>Cerebro de Inteligencia Artificial (AI Engine)</strong> integrado en Google Cloud Platform (Vertex AI) que redacta análisis socráticos personalizados, gestiona el Radar de Entorno (Porter Dinámico) y automatiza actas de directorio.</blockquote>
+<br/>
+<hr/>
+<br/>
+<h2>2. Definición Arquitectónica: Ecosistema Dual Integrado (Web + App Móvil Nativa)</h2>
+<br/>
+<p>Para responder con contundencia a la duda de Mauricio sobre <em>"¿página web o app?"</em>, la respuesta técnica y comercial definitiva es que <strong>Siren MG debe operar como un Ecosistema Dual Integrado</strong>:</p>
+<br/>
+<pre><code>+-----------------------------------------------------------------------------------------------+
+|                                      ECOSISTEMA SIREN MG                                      |
++-----------------------------------------------------------------------------------------------+
+|                                                                                               |
+|   1. PORTAL WEB CORPORATIVO (Siren Web Hub)          2. APP MÓVIL NATIVA (Siren Cockpit 360)  |
+|   (Next.js 16 / React 19 / Responsive Desktop)       (iOS App Store + Android Google Play)    |
+|   --------------------------------------------       ---------------------------------------  |
+|   <em> Landing Page pública y posicionamiento SEO       </em> En el bolsillo del Gerente General 24/7|
+|   <em> Prediagnóstico Express (Lead Magnet gratuito)    </em> Acceso Biométrico (FaceID / Huella)    |
+|   <em> Diagnóstico Extendido (25 variables socráticas)  </em> Notificaciones Push de Alertas Críticas|
+|   <em> Backoffice / CMS Administrativo para Mauricio    </em> Monitoreo de KPIs de EBITDA en faena   |
+|   <em> Proyección en Pantallas de Directorio (HD)       </em> Modo Offline para faenas sin cobertura |
+|                                                                                               |
++-----------------------------------------------+-----------------------------------------------+
+                                                |
+                                                v
++-----------------------------------------------------------------------------------------------+
+|                             BACKEND UNIFICADO &amp; CLOUD (GCP)                                   |
+|   * API REST / Serverless: Python (FastAPI) en Google Cloud Run (Escalabilidad a cero)        |
+|   * Base de Datos: PostgreSQL (Supabase / Cloud SQL) con Row-Level Security (RLS)             |
+|   * Seguridad: Cifrado TLS 1.3 en tránsito + AES-256 en reposo (Grado Bancario/Minero)        |
+|   * Facturación Automática: Integración DTE (Boleta/Factura Electrónica) + Pasarelas de Pago  |
++-----------------------------------------------+-----------------------------------------------+
+                                                |
+                                                v
++-----------------------------------------------------------------------------------------------+
+|                       CEREBRO DE INTELIGENCIA ARTIFICIAL (Vertex AI &amp; LLMs)                   |
+|   <em> Gemini 1.5 Flash (Análisis Socrático en PDF)  </em> Claude 3.5 Sonnet (Proyectos Kaplan/Norton)|
+|   <em> Gemini 1.5 Pro (Auditoría Balances/Memorias)  </em> OpenAI Whisper (Actas de Directorio en Voz)|
++-----------------------------------------------------------------------------------------------+</code></pre>
+<br/>
+<h3>Justificación de cada canal:</h3>
+<li><strong>Portal Web (Siren Web Hub):</strong></li>
+<p>    <em>   </em>Captación sin fricción:* El Gerente General no descargará una app de 80MB solo para cotizar. La web abre en 1 segundo desde LinkedIn, WhatsApp o correo.</p>
+<p>    <em>   </em>Trabajo pesado de analistas y Directorio:* La revisión de matrices complejas, balances y actas se realiza en pantallas de escritorio.</p>
+<li><strong>App Móvil Nativa (Siren Cockpit 360 en iOS & Android):</strong></li>
+<p>    <em>   </em>Status e "Inmunidad Informativa":* El GG tiene en su iPhone/Android su propio tablero de comando.</p>
+<p>    <em>   </em>Alertas Push Inmediatas:<em> </em>"Alerta: Fuga detectada en Contrato Faena X por sobrecosto de HH"*.</p>
+<p>    <em>   </em>Seguridad Biométrica (FaceID / Huella):* Para abrir los datos financieros ultra-sensibles sin escribir contraseñas.</p>
+<p>    <em>   </em>Modo Offline:* Permite consultar los proyectos estratégicos durante vuelos o en el interior de faenas mineras sin cobertura.</p>
+<br/>
+<hr/>
+<br/>
+<h2>3. Estrategia y Arquitectura de Inteligencia Artificial (AI APIs & Engines)</h2>
+<br/>
+<p>La IA en Siren MG no es un adorno cosmético: es el <strong>multiplicador de valor</strong> que permite ofrecer consultoría personalizada de alta gama a costo marginal cero.</p>
+<br/>
+<pre><code>[ Datos Cliente + Facturación + Respuestas Socráticas (0-5) ]
+                              │
+                              ▼
+ ┌─────────────────────────────────────────────────────────────┐
+ │               CEREBRO DE IA (Google Vertex AI)              │
+ └─────────────────────────────────────────────────────────────┘
+        │                     │                      │
+        ▼                     ▼                      ▼
+1. Motor Socrático      2. Proyectos K&amp;N       3. Radar Macro
+   (Diagnóstico PDF        (Planes con            (Alertas Push
+    personalizado con       KPIs SMART y           Banco Central /
+    voz de Mauricio)        metas a 90 días)       Aduanas / Cobre)</code></pre>
+<br/>
+<h3>A. Los 4 Módulos de Inteligencia Artificial de Siren MG</h3>
+<br/>
+<li><strong>Módulo 1: Motor Socrático Generativo (Fase 1 - Prediagnóstico y Diagnóstico):</strong></li>
+<p>    <em>   </em>Funcionamiento:<em> La API de IA recibe la facturación de la empresa, su rubro específico (ej. contratista de movimiento de tierra) y su puntaje en las 25 preguntas socráticas. El modelo genera <strong>3 párrafos de diagnóstico cualitativo con la voz y doctrina de Mauricio Geldes</strong>, explicando </em>por qué* ocurre la fuga de EBITDA y cómo mitigarlo.</p>
+<li><strong>Módulo 2: Generador de Proyectos Estratégicos Kaplan & Norton (Fase 2):</strong></li>
+<p>    <em>   </em>Funcionamiento:* Transforma las debilidades detectadas en proyectos estructurados bajo las 4 perspectivas del Balanced Scorecard (Financiera, Clientes, Procesos Internos, Personas/Aprendizaje), con KPIs SMART, plazos y perfiles de cargo responsables.</p>
+<li><strong>Módulo 3: Radar de Entorno Dinámico (Fase 3 - Porter Dinámico con IA):</strong></li>
+<p>    <em>   </em>Funcionamiento:* Scrapers en Python recopilan diariamente variaciones de commodities (Cobre, Molibdeno), inflación, UF y circulares de Aduanas. La IA sintetiza esta data en un <strong>Boletín Ejecutivo Semanal</strong> enviado como notificación push al teléfono del directivo.</p>
+<li><strong>Módulo 4: AI Secretary de Directorio y Búsqueda Semántica (Fase 3):</strong></li>
+<p>    <em>   </em>Funcionamiento:* Transcripción de audios de reuniones gerenciales y de directorio (OpenAI Whisper) con extracción automática de actas, acuerdos, responsables y plazos de remediación de EBITDA.</p>
+<br/>
+<h3>B. Matriz Comparativa de APIs de Inteligencia Artificial</h3>
+<br/>
+<div class='table-container'><table><thead><tr><th>Proveedor / API</th><th>Rol en Siren MG</th><th>Ventajas Clave</th><th>Costo de Consumo</th></tr></thead><tbody><tr><td><strong>Google Vertex AI (Gemini 1.5 Flash)</strong> <em>(Principal)</em></td><td>Motor Socrático, generación de PDFs y síntesis del Radar.</td><td>Ventana de contexto gigante (1M tokens), latencia ultrarrápida, corre dentro de GCP.</td><td><strong>~\$0.075 USD / millón de tokens</strong> <em>(~$3 CLP por reporte generado)</em></td></tr><tr><td><strong>Google Vertex AI (Gemini 1.5 Pro)</strong></td><td>Auditoría profunda de balances anuales, memorias y contratos.</td><td>Razonamiento financiero avanzado e ingesta de PDFs extensos.</td><td><strong>~\$1.25 USD / millón de tokens</strong></td></tr><tr><td><strong>Anthropic (Claude 3.5 Sonnet)</strong></td><td>Redacción de proyectos estratégicos y cartas a Directorios.</td><td>La mejor redacción y argumentación ejecutiva en español.</td><td><strong>~\$3.00 USD / millón de tokens</strong></td></tr><tr><td><strong>OpenAI (Whisper + Embeddings)</strong></td><td>Transcripción de audios de directorio y búsqueda en biblioteca documental.</td><td>Estándar de la industria en precisión de audio y búsqueda semántica.</td><td><strong>~\$0.006 USD / minuto de audio</strong></td></tr></tbody></table></div>
+<br/>
+<h3>C. Privacidad y Blindaje Legal de Datos (Enterprise Grade)</h3>
+<li>  <strong>Contrato Enterprise en Vertex AI:</strong> Google garantiza contractualmente que <strong>ningún dato financiero, balance ni respuesta socrática de los clientes de Siren MG se utilizará jamás para entrenar modelos públicos</strong>.</li>
+<li>  Cumplimiento de normativas ISO 27001, SOC2 Tipo II y cifrado de punta a punta.</li>
+<br/>
+<hr/>
+<br/>
+<h2>4. Respuestas Detalladas y Recomendaciones al Correo de Mauricio (Puntos 1 al 13)</h2>
+<br/>
+<h3>Punto 1: Entregables (Fuga EBITDA + Proyectos Estratégicos)</h3>
+<li>  <strong>Prediagnóstico (Gratuito / Lead Magnet Web):</strong> Arroja el monto total de Fuga Teórica de EBITDA (el "dolor"), nivel global de madurez (0 a 5) y 3 proyectos estratégicos prioritarios en formato ejecutivo (sin la receta quirúrgica). Su objetivo es gatillar la reunión de venta.</li>
+<li>  <strong>Diagnóstico Completo (Pagado):</strong> Desglose paramétrico de las 25 variables, análisis socrático con IA, matriz de impacto vs. esfuerzo y roadmap Kaplan & Norton detallado.</li>
+<li>  <em>Recomendación:</em> Exportación a PDF firmado con sello institucional Siren MG y semáforo visual de criticidad.</li>
+<br/>
+<h3>Punto 2: Entrada de Datos y Manejo Multi-Moneda</h3>
+<li>  <strong>Canales:</strong> Entrada rápida por Web; acceso recurrente al Cockpit mediante Web o App Móvil.</li>
+<li>  <strong>Manejo de Moneda:</strong> Selector explícito <strong>CLP / USD</strong> con sincronización automática de UF y Dólar Observado (API Banco Central / CMF).</li>
+<li>  <strong>Escala Socrática (0 a 5):</strong> Cada pregunta tendrá rúbrica explicativa visible en <em>Tooltips</em> interactivos para estandarizar las respuestas del directivo.</li>
+<br/>
+<h3>Punto 3: Canales de Venta y Paquetes Comerciales</h3>
+<li>  <strong>3.1 Web Autónoma:</strong> Autoservicio directo con pasarela de pago.</li>
+<li>  <strong>3.2 B2B Directo:</strong> Flujo comercial con cotización personalizada y agendamiento integrado (Calendly/HubSpot).</li>
+<li>  <strong>3.3 Distribuidores Internacionales (Perú / México):</strong> Sistema de <strong>Partners / Tenants</strong> con enlaces de afiliado parametrizados y liquidación de comisiones.</li>
+<li>  <strong>Paquetes:</strong></li>
+<p>    <em>   </em>Tier A (SaaS Autónomo):* Diagnóstico digital + Dashboard básico Web y App.</p>
+<p>    <em>   </em>Tier B (+ Asesoría Virtual 30-60 min):* Diagnóstico + 1 sesión táctica vía videollamada.</p>
+<p>    <em>   </em>Tier C (+ Workshop Presencial / Kickoff):* Diagnóstico + Jornada de alineación gerencial en oficinas del cliente.</p>
+<p>    <em>   </em>Tier D (+ Retainer Directorio / C-Suite as a Service):* Cockpit 360 Full + 2 sesiones mensuales de acompañamiento a Directorio.</p>
+<br/>
+<h3>Punto 4: Capacidad de Autoalimentación (Mejora Continua)</h3>
+<li>  <strong>Backoffice / CMS de Mauricio:</strong> Panel administrativo para redactar nuevas preguntas, calibrar ponderadores de penalización de EBITDA y agregar nuevos proyectos estratégicos sin depender de programadores.</li>
+<br/>
+<h3>Punto 5: Formato de Proyectos Estratégicos (Balanced Scorecard / Kaplan & Norton)</h3>
+<li>  Plantilla digital que agrupa proyectos en las 4 perspectivas clásicas (Financiera, Clientes, Procesos Internos, Aprendizaje/Personas) potenciada con IA para generar KPIs personalizados.</li>
+<br/>
+<h3>Punto 6: Sistema de Pago Online y Trazabilidad Financiera</h3>
+<li>  <strong>Chile:</strong> Integración con <strong>Webpay Plus (Transbank)</strong> y <strong>Fintoc / Khipu</strong> (transferencias cuenta a cuenta con comisión ~1%).</li>
+<li>  <strong>Internacional (Perú, México, Global):</strong> <strong>Stripe Billing</strong> (cobro en USD con tarjetas internacionales y suscripciones recurrentes).</li>
+<li>  <strong>Facturación:</strong> Webhooks automáticos que emiten la Factura Electrónica (DTE) con APIs chilenas (SimpleFactura / LibreDTE).</li>
+<br/>
+<h3>Punto 7: Radar de Entorno (Porter Dinámico y Macro con IA)</h3>
+<li>  <strong>Estrategia Freemium:</strong> En Fase 1 se entrega un "Preview" del Radar (Cobre, UF, Dólar). El análisis cualitativo avanzado con IA y alertas de licitaciones queda reservado para la Fase 3.</li>
+<br/>
+<h3>Punto 8: Fase 2 (Estructura de Flanco Débil y Tela de Araña de RRHH)</h3>
+<li>  Entregable estructurado con diagnóstico de flanco débil y matriz de competencias de cargos clave, cobrado como <em>Setup Fee</em> o Consultoría de Profundización.</li>
+<br/>
+<h3>Punto 9: Fase 3 (Cockpit 360 en Vivo / Gestión "En Video")</h3>
+<li>  SaaS B2B en Web y App Móvil con seguimiento de fugas vs. presupuesto, repositorio de gobierno corporativo y asignación de compromisos con notificaciones push al teléfono.</li>
+<br/>
+<h3>Punto 10: Piloto de Validación con Golden Omega (Miguel Ángel Peña)</h3>
+<li>  Dossier de ciberseguridad, NDA corporativo pre-firmado y auditoría matemática de verificación cruzada entre los cálculos manuales y el motor en Python.</li>
+<br/>
+<h3>Punto 11: Clientes Target y Fomento CORFO</h3>
+<li>  Foco en Contratistas Mineros y PyMEs Industriales con postulación a instrumentos de subsidio CORFO (<strong>SumaTuInnovación</strong>, <strong>Vouchers</strong>) y beneficios tributarios bajo la <strong>Ley I+D (Art. 35 bis)</strong> (crédito tributario de hasta el 35%).</li>
+<br/>
+<h3>Punto 12: Benchmarking Sectorial</h3>
+<li>  Base de datos anonimizada para generar reportes comparativos de industria cuando se superen las 30-50 empresas por rubro.</li>
+<br/>
+<h3>Punto 13: Identidad Corporativa y Rol Comercial</h3>
+<li>  Diseño institucional de alta gama (Navy Blue / Dorado / Grafito), correos transaccionales <code>@sirenstrategy.com</code> y One-Pager comercial de alto impacto.</li>
+<br/>
+<hr/>
+<br/>
+<h2>5. Análisis de Costo-Beneficio (TCO Cloud e IA)</h2>
+<br/>
+<h3>¿Cómo se llama este documento formal?</h3>
+<li>  <strong>TCO (Total Cost of Ownership - Costo Total de Propiedad)</strong></li>
+<li>  <strong>Business Case Tecnológico y Plan FinOps (Financial Operations)</strong></li>
+<br/>
+<h3>Presupuesto Realista de Infraestructura, IA y Stores</h3>
+<br/>
+<h4>Cuentas de Desarrollador para Apps Móviles (Costos Fijos):</h4>
+<li>  <strong>Apple Developer Program:</strong> \$99 USD/año (iOS App Store).</li>
+<li>  <strong>Google Play Console:</strong> \$25 USD (pago único vitalicio).</li>
+<br/>
+<h4>Escenario 1: Fase Santiago de Chile / Tracción Inicial (Meses 1 a 6)</h4>
+<p><em>Volumen estimado: 10 a 50 clientes activos, 500 prediagnósticos web mensuales.</em></p>
+<li>  <strong>Hosting Frontend Web (Vercel Pro):</strong> \$20 USD/mes.</li>
+<li>  <strong>Backend Motor Python (GCP Cloud Run):</strong> \$0 a \$5 USD/mes.</li>
+<li>  <strong>Base de Datos & Auth (Supabase PostgreSQL):</strong> \$25 USD/mes.</li>
+<li>  <strong>Notificaciones Push Móviles (Firebase Cloud Messaging):</strong> \$0 (Gratuito).</li>
+<li>  <strong>Consumo APIs de IA (Vertex AI / Gemini 1.5 Flash):</strong> <strong>\$10 a \$20 USD/mes.</strong></li>
+<li>  <strong>Dominio y Correos Corporativos (Google Workspace):</strong> \$14 USD/mes.</li>
+<li>  <strong>Pasarelas de Pago:</strong> Variable (~1% a 2.9% por transacción exitosa).</li>
+<li>  <strong>TOTAL MENSUAL INFRAESTRUCTURA + IA:</strong> <strong>~\$70 a \$95 USD/mes (~$65.000 a $90.000 CLP/mes).</strong></li>
+<br/>
+<h4>Escenario 2: Expansión Latam & Global (Chile, Perú, México / Meses 6 a 18)</h4>
+<p><em>Volumen estimado: 500 a 2.000 empresas, 10.000 diagnósticos/mes, multi-región.</em></p>
+<li>  <strong>Vercel Team Enterprise / Pro:</strong> \$40 USD/mes.</li>
+<li>  <strong>GCP Cloud Run Multi-Región:</strong> \$50 a \$150 USD/mes.</li>
+<li>  <strong>Base de Datos Dedicada (Supabase Scale / Cloud SQL):</strong> \$100 a \$200 USD/mes.</li>
+<li>  <strong>Consumo APIs de IA (Radar Masivo + Vertex AI + Whisper):</strong> <strong>\$100 a \$300 USD/mes.</strong></li>
+<li>  <strong>Ciberseguridad y CDN (Cloudflare Enterprise):</strong> \$50 USD/mes.</li>
+<li>  <strong>TOTAL MENSUAL INFRAESTRUCTURA + IA ESCALA:</strong> <strong>~\$340 a \$740 USD/mes (~$330.000 a $700.000 CLP/mes).</strong></li>
+<br/>
+<h3>Retorno sobre la Inversión (ROI):</h3>
+<li>  Con <strong>un solo cliente</strong> contratando el Plan de Gobernanza o Dirección Fraccional (ej. 80 UF/mes = ~\$3.000.000 CLP/mes), se cubren <strong>más de 3 años de costos operativos totales de infraestructura e IA</strong>. El margen bruto del software supera el <strong>90%</strong>.</li>
+<br/>
+<hr/>
+<br/>
+<h2>6. Cotización del Desarrollo Técnico (Web + App Móvil + Motor IA) y Tiempos</h2>
+<br/>
+<p>Si este proyecto integral se contratara a una Software Factory en Chile, la valorización de mercado de las horas de ingeniería de Daniel / Sambalab sería:</p>
+<br/>
+<div class='table-container'><table><thead><tr><th>Fase</th><th>Alcance Técnico</th><th>Plazo de Entrega</th><th>Valor de Mercado (Software Factory)</th></tr></thead><tbody><tr><td><strong>Fase 1 (MVP)</strong></td><td>Web Landing Next.js + Motor Algorítmico Python (25 variables) + Generador PDF con IA Gemini + CMS de Preguntas + Pasarela de Pagos + Maqueta Base de App Móvil.</td><td><strong>5 a 7 semanas</strong></td><td><strong>\$15.000.000 a \$19.000.000 CLP</strong> (USD \$16k - \$21k)</td></tr><tr><td><strong>Fase 2</strong></td><td>Entregables de remediación, Generador Kaplan & Norton con IA, Módulo RRHH / Competencias + Sincronización Web/Móvil.</td><td><strong>4 a 6 semanas</strong></td><td><strong>\$11.000.000 a \$15.000.000 CLP</strong> (USD \$12k - \$16k)</td></tr><tr><td><strong>Fase 3</strong></td><td>App Móvil Nativa iOS & Android (<em>Cockpit 360</em> en stores con FaceID y Push) + Web Dashboard en vivo + Radar IA Vertex + AI Secretary de Directorio + Multi-tenant.</td><td><strong>8 a 12 semanas</strong></td><td><strong>\$26.000.000 a \$36.000.000 CLP</strong> (USD \$28k - \$39k)</td></tr><tr><td><strong>TOTAL</strong></td><td><strong>Ecosistema Completo Llave en Mano (Web + App Stores + IA)</strong></td><td><strong>~5 a 6 meses</strong></td><td><strong>\$52.000.000 a \$70.000.000 CLP</strong> (~USD \$56k - \$76k)</td></tr></tbody></table></div>
+<br/>
+<hr/>
+<br/>
+<h2>7. Estructuración Societaria: ¿Cómo hacerlo si entras como SOCIO sin cobrar de inmediato?</h2>
+<br/>
+<p>Si Daniel / Sambalab entra como <strong>Socio Tecnológico y Co-Founder (CTO)</strong> aportando el desarrollo a cambio de participación accionaria y flujo futuro:</p>
+<br/>
+<h3>A. Vehículo Legal y Contratos</h3>
+<li>  Constitución de una <strong>SpA (Sociedad por Acciones)</strong> dedicada a <em>Siren MG / Siren Governance</em>.</li>
+<li>  Firma de un <strong>Pacto de Accionistas (Shareholders Agreement)</strong> ante notario.</li>
+<br/>
+<h3>B. Mecanismo de Aporte: "Sweat Equity" y Vesting por Hitos</h3>
+<li><strong>Sweat Equity (Capital por Trabajo):</strong> El valor del desarrollo (tasado en los \$52M-\$70M CLP) se reconoce legalmente como el aporte tecnológico no dinerario de Sambalab/Daniel.</li>
+<li><strong>Vesting por Hitos Técnicos (Milestone-based Vesting):</strong></li>
+<p>    <em>   </em>Hito 1 (Entrega Fase 1 MVP Web + Backend + Motor IA probado con Golden Omega):* Consolida el 40% de las acciones asignadas.</p>
+<p>    <em>   </em>Hito 2 (Entrega Fase 2 con Generador Kaplan & Norton IA):* Consolida el 30%.</p>
+<p>    <em>   </em>Hito 3 (Entrega Fase 3 con App publicada en App Store y Google Play):* Consolida el 30% restante (100% de la participación).</p>
+<br/>
+<h3>C. Distribución Accionaria Recomendada</h3>
+<li>  <strong>Mauricio Geldes (Socio Fundador / Creador Doctrinal & Consultor Senior):</strong> ~45% - 50%</li>
+<li>  <strong>Daniel García Rojas / Sambalab (CTO & Co-Founder Tecnológico):</strong> ~35% - 40%</li>
+<li>  <strong>Pedro García / Sambalab (Director Comercial & Operaciones):</strong> ~10% - 15%</li>
+<br/>
+<h3>D. Modelo de Reparto de Ingresos (Cash Flow)</h3>
+<li><strong>Ingresos por Consultoría Presencial de Mauricio:</strong> Mauricio cobra un honorario preferente por su tiempo en terreno (ej. 70%), y el 30% restante queda en caja de la SpA.</li>
+<li><strong>Ingresos por Licencias SaaS (MRR Web y App):</strong> El 100% ingresa a la SpA. Se define un <strong>Fee de Mantenimiento Tecnológico recurrente para Sambalab/CTO (ej. 25% a 35% del MRR)</strong> por actualización continua de las apps, servidores y consumo de IA, y el excedente se distribuye como <strong>Dividendos trimestrales</strong> entre los socios.</li>
+<br/>
+<h3>E. Propiedad Intelectual (IP)</h3>
+<li>  El código fuente, bases de datos y algoritmos quedan licenciados de forma exclusiva a la SpA, protegiendo a ambas partes.</li>
+<br/>
+<hr/>
+<br/>
+<h2>8. Estrategia y Recomendaciones de Dominios</h2>
+<br/>
+<li>🥇 <strong><code>sirenstrategy.com</code></strong> <em>(Altamente Recomendado)</em>: El más prestigioso para la plataforma web y endpoints de las apps móviles.</li>
+<li>🥈 <strong><code>sirengovernance.com</code></strong>: Fuerte posicionamiento en blindaje y directorios.</li>
+<li>🥉 <strong><code>sirenmg.com</code></strong> / <strong><code>sirenmg.cl</code></strong>: Para capturar la búsqueda de la marca de Mauricio en Chile.</li>
+<br/>
+<hr/>
+<br/>
+<h2>9. Próximos Pasos Inmediatos</h2>
+<br/>
+<li><strong>Aprobación del Documento:</strong> Revisión final con Pedro.</li>
+<li><strong>Envío Oficial a Mauricio:</strong> Enviar este documento consolidado como respuesta formal a su correo.</li>
+<li><strong>Sesión de Calibración Matemática e IA:</strong> Reunión de 45 min para ajustar las fórmulas del manual y los <em>prompts</em> del motor socrático.</li>
+<li><strong>Demo Interactiva:</strong> Presentar el flujo del prediagnóstico en Next.js y el prototipo visual del <em>Cockpit</em> móvil en Figma.</li>
+<br/>
+</div>
+</body>
+</html>
